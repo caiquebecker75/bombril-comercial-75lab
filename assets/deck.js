@@ -343,7 +343,8 @@
       const k=v+'/'+c,x=D.c[k],e=D.e[c],V=D.v[v],vazio=$('#cubVazio');
       const tem=x&&x.n>0;
       const src='assets/cad/'+(tem?v+'-'+c:v)+'.glb';
-      if(mv.dataset.atual!==src){mv.dataset.atual=src;mv.setAttribute('src',src);}
+      if(mv.dataset.atual!==src){mv.dataset.atual=src;if(t.classList.contains('em3d'))mv.setAttribute('src',src);}
+      $('#cubFoto').src='assets/veic/'+v+'.webp';$('#cubLado').src='assets/cad/lado-'+(tem?v+'-'+c:v)+'.svg';
       vazio.classList.toggle('on',!tem);vazio.textContent=tem?'':'Não cabe: a maior embalagem deste kit é maior que o baú da '+V.nome.toLowerCase();
       $('#cubPlanoImg').src=tem?'assets/cad/plano-'+v+'-'+c+'.svg':'assets/cad/plano-'+v+'.svg';
       $('#cubPlano').dataset.amplia=$('#cubPlanoImg').src;$('#cubPlano').dataset.legenda='Plano de carga · '+V.nome+' · '+D.nc[c];
@@ -353,7 +354,7 @@
         $('#cubNl').textContent='kits de 7 peças, para a região SP Capital';
         $('#cubKp').innerHTML='<div><b>'+x.via+'</b><span>carretas para a região</span></div><div><b>'+fm(x.cx)+'</b><span>volumes</span></div><div><b>'+e.m3.toString().replace('.',',')+' m³</b><span>de carga</span></div><div><b>'+(x.kg/1000).toFixed(1).replace('.',',')+' t</b><span>somando tudo</span></div>';
         $('#cubEmbT').textContent='O que vai na carga · kits e volumes';
-        $('#cubEmb').innerHTML='<table>'+e.reg.map(r=>'<tr><td>'+r[1]+'</td><td style="font-family:var(--corpo)">'+r[0]+'</td></tr>').join('')+'</table><p class="tot">O 3D mostra a 1ª carreta, com '+x.ocups[0]+'% do baú ocupado.</p>';
+        $('#cubEmb').innerHTML='<table>'+e.reg.map(r=>'<tr><td>'+r[1]+'</td><td style="font-family:var(--corpo)">'+r[0]+'</td></tr>').join('')+'</table><p class="tot">A imagem mostra a 1ª carreta, com '+x.ocups[0]+'% do baú ocupado.</p>';
       }else{
         $('#cubNl').textContent=tem?'kits por viagem na '+V.nome.toLowerCase():'não cabe neste veículo';
         $('#cubKp').innerHTML=tem?('<div><b>'+x.ocup+'%</b><span>do baú ocupado; quem limita é '+lim+'</span></div><div><b>'+(x.kg/1000).toFixed(1).replace('.',',')+' t</b><span>de '+V.kg+' kg de carga útil</span></div><div><b>'+fm(x.cx)+'</b><span>volumes no baú</span></div><div><b>'+(x.tir?x.via:'·')+'</b><span>'+(x.tir?'viagens para '+fm(x.tir)+' kits':'tiragem a definir')+'</span></div>'):'<div><b>'+V.m3+' m³</b><span>baú de '+V.med+'</span></div>';
@@ -364,7 +365,8 @@
     }
     bV.forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();v=b.dataset.v;if(c==='MIX')c='BL01';mostra();}));
     bC.forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();c=b.dataset.c;mostra();}));
-    aoEntrar['s-cub2']=()=>{carregaMV();mostra();};
+    $('#cub3d').addEventListener('click',e=>{e.stopPropagation();const on=t.classList.toggle('em3d');$('#cub3d').textContent=on?'Ver a lateral':'Ver em 3D';if(on){carregaMV();mv.setAttribute('src',mv.dataset.atual);}});
+    aoEntrar['s-cub2']=()=>{mostra();};
     roteiro('s-cub2',{itens:()=>[...bC,...bV.slice(1)],ms:()=>7000});
     mostra();
     function carregaMV(){if(!document.querySelector('script[src*="model-viewer"]')){const sc=document.createElement('script');sc.type='module';sc.src='assets/vendor/model-viewer.min.js';document.head.appendChild(sc);}}
