@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Central de trade · simulação · 75 LAB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* Simulação da central de rede e gestão da conta (dados de exemplo, nenhum dado de cliente) */
+:root{--ink:#0d0d10;--ink2:#18181d;--paper:#F2F1E9;--paper2:#E7E5DA;--linha:#dcd9cc;--lime:#C0EE4E;--teal:#01A290;--alerta:#E8412C;--amar:#F2B23A;--wa:#25D366;--azul:#2F6FEB;
+  --t:'Big Shoulders Display',Impact,sans-serif;--c:'Space Grotesk',system-ui,sans-serif;--m:'Space Mono',monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--c);background:var(--paper);color:var(--ink);font-size:13px;display:grid;grid-template-columns:220px 1fr;grid-template-rows:56px 1fr;height:100vh;overflow:hidden}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+header{grid-column:1/-1;background:var(--ink);color:var(--paper);display:flex;align-items:center;gap:16px;padding:0 18px}
+header .logo{font-family:var(--t);font-weight:900;font-size:24px;letter-spacing:.01em}
+header .logo b{color:var(--lime)}
+header .cli{font-family:var(--m);font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:.7;border-left:1px solid #333;padding-left:16px}
+header .busca{margin-left:auto;background:#1f1f25;border:1px solid #2c2c33;padding:8px 12px;width:340px;color:#9a9aa3;font-size:12px}
+header .sync{font-family:var(--m);font-size:10.5px;display:flex;align-items:center;gap:6px;color:var(--lime)}
+header .sync i{width:7px;height:7px;border-radius:50%;background:var(--lime);box-shadow:0 0 0 3px rgba(192,238,78,.2)}
+header .eu{width:30px;height:30px;border-radius:50%;background:var(--lime);color:var(--ink);display:grid;place-items:center;font-weight:700;font-size:12px}
+nav{background:var(--ink2);color:var(--paper);padding:16px 10px;display:flex;flex-direction:column;gap:3px}
+nav .sec{font-family:var(--m);font-size:10px;letter-spacing:.14em;text-transform:uppercase;opacity:.45;margin:12px 8px 6px}
+nav button{display:flex;align-items:center;gap:10px;padding:10px 10px;text-align:left;font-size:13.5px;border-left:3px solid transparent;opacity:.78}
+nav button:hover{opacity:1;background:#222229}
+nav button.on{opacity:1;background:#26262e;border-left-color:var(--lime)}
+nav button .ct{margin-left:auto;font-family:var(--m);font-size:10.5px;background:var(--alerta);color:#fff;padding:1px 6px}
+nav button .ct.ok{background:#33333b}
+nav .rod{margin-top:auto;font-family:var(--m);font-size:10px;opacity:.5;line-height:1.5;padding:8px}
+main{overflow:hidden;padding:20px 24px;display:flex;flex-direction:column;gap:14px}
+.tit{display:flex;align-items:flex-end;gap:14px}
+.tit h1{font-family:var(--t);font-weight:900;font-size:34px;line-height:1;text-transform:uppercase;white-space:nowrap}
+.tit .sub{font-size:12.5px;opacity:.65;padding-bottom:3px}
+.tit .acoes{margin-left:auto;display:flex;gap:8px}
+.bt{font-family:var(--m);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border:1.5px solid var(--ink);padding:7px 11px;background:#fff}
+.bt.cheio{background:var(--ink);color:var(--lime)}
+.card{background:#fff;border:1px solid var(--linha)}
+.tag{display:inline-flex;align-items:center;gap:5px;font-family:var(--m);font-size:10px;font-weight:700;letter-spacing:.04em;padding:2px 7px;text-transform:uppercase}
+.t-wa{background:#dcf8e6;color:#0b7a37}.t-em{background:#e3ecff;color:#1f4fc0}.t-al{background:#fde3df;color:#b52a17}.t-ok{background:#dff5f1;color:#017a6c}.t-am{background:#fff1d6;color:#9a6200}.t-ci{background:#ecebe4;color:#555}
+.view{display:none;flex:1;min-height:0}
+.view.on{display:flex;flex-direction:column;gap:14px}
+.grid{display:grid;gap:14px;flex:1;min-height:0}
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.kpi{background:#fff;border:1px solid var(--linha);padding:12px 14px}
+.kpi small{display:block;font-family:var(--m);font-size:10px;letter-spacing:.06em;text-transform:uppercase;opacity:.6}
+.kpi b{display:block;font-family:var(--t);font-weight:900;font-size:36px;line-height:1;margin-top:4px}
+.kpi em{font-style:normal;font-size:11.5px;opacity:.7}
+.kpi.al b{color:var(--alerta)}.kpi.ok b{color:var(--teal)}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{font-family:var(--m);font-size:10px;letter-spacing:.06em;text-transform:uppercase;text-align:left;opacity:.55;font-weight:400;padding:8px 10px;border-bottom:1px solid var(--linha)}
+td{padding:9px 10px;border-bottom:1px solid #eeece4}
+tr.sel td{background:#f6fbe6}
+.bar{height:7px;background:#ecebe4;position:relative;min-width:80px}.bar i{position:absolute;left:0;top:0;bottom:0;background:var(--teal)}
+
+/* atendimento */
+#v-atendimento .grid{grid-template-columns:330px 1fr 300px}
+.inbox{display:flex;flex-direction:column;overflow:hidden}
+.inbox .filtros{display:flex;gap:6px;padding:10px;border-bottom:1px solid var(--linha)}
+.inbox .filtros span{font-family:var(--m);font-size:10px;padding:4px 7px;border:1px solid var(--linha)}
+.inbox .filtros span.on{background:var(--ink);color:var(--lime);border-color:var(--ink)}
+.msg{padding:11px 12px;border-bottom:1px solid #eeece4;display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:start}
+.msg.sel{background:#f6fbe6;border-left:3px solid var(--lime)}
+.msg .av{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:11px;color:#fff}
+.msg b{display:block;font-size:12.5px}
+.msg p{font-size:12px;opacity:.75;line-height:1.35;margin-top:2px}
+.msg .h{font-family:var(--m);font-size:10px;opacity:.55;text-align:right}
+.msg .tags{display:flex;gap:4px;margin-top:5px;flex-wrap:wrap}
+.conversa{display:flex;flex-direction:column}
+.conversa .cab{padding:12px 16px;border-bottom:1px solid var(--linha);display:flex;align-items:center;gap:10px}
+.conversa .cab b{font-size:14px}
+.conversa .cab .sla{margin-left:auto;font-family:var(--m);font-size:11px;background:var(--ink);color:var(--lime);padding:5px 9px}
+.fio{flex:1;padding:16px;display:flex;flex-direction:column;gap:10px;background:#efeae2;overflow:hidden}
+.bal{max-width:72%;padding:9px 12px;font-size:12.5px;line-height:1.45;box-shadow:0 1px 0 rgba(0,0,0,.08)}
+.bal.ele{background:#fff;align-self:flex-start}
+.bal.nos{background:#d9fdd3;align-self:flex-end}
+.bal small{display:block;font-family:var(--m);font-size:9.5px;opacity:.55;margin-top:4px;text-align:right}
+.bal img{width:210px;display:block;margin-bottom:6px}
+.bal.sis{align-self:center;background:var(--ink);color:var(--lime);font-family:var(--m);font-size:10.5px;max-width:90%}
+.resp{display:flex;gap:8px;padding:10px;border-top:1px solid var(--linha);align-items:center}
+.resp span{flex:1;border:1px solid var(--linha);padding:9px 10px;color:#888;font-size:12px}
+.resp .bt{white-space:nowrap}
+.loja-lado{display:flex;flex-direction:column;overflow:hidden}
+.loja-lado .bloco{padding:12px 14px;border-bottom:1px solid #eeece4}
+.loja-lado h3{font-family:var(--t);font-size:22px;line-height:1;text-transform:uppercase}
+.loja-lado .k{font-family:var(--m);font-size:10px;letter-spacing:.06em;text-transform:uppercase;opacity:.55;margin-bottom:6px}
+.loja-lado dl{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-size:12px}
+.loja-lado dt{opacity:.6}
+.loja-lado .planta{width:100%;height:120px;object-fit:cover;object-position:top;border:1px solid var(--linha)}
+.pecas-l li{list-style:none;display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:4px 0}
+
+/* base de lojas */
+#v-lojas .grid{grid-template-columns:1fr 360px}
+.mapa-f{display:flex;gap:6px;padding:10px;border-bottom:1px solid var(--linha);flex-wrap:wrap}
+.mapa-f span{font-family:var(--m);font-size:10px;padding:4px 8px;border:1px solid var(--linha)}
+.mapa-f span.on{background:var(--ink);color:var(--lime);border-color:var(--ink)}
+.ficha-l{display:flex;flex-direction:column;overflow:hidden}
+.ficha-l .foto{width:100%;height:150px;object-fit:cover}
+.ficha-l .pl{width:100%;height:190px;object-fit:contain;background:#fff;border-top:1px solid var(--linha)}
+.ficha-l .bloco{padding:12px 14px;border-bottom:1px solid #eeece4}
+.pontos{display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:11.5px}
+.pontos span{display:flex;gap:6px;align-items:center}
+.pontos i{width:9px;height:9px;border-radius:50%}
+
+/* cronograma */
+.gantt{position:relative;overflow:hidden;flex:1}
+.gantt .meses{display:grid;grid-template-columns:200px repeat(12,1fr);border-bottom:1px solid var(--linha)}
+.gantt .meses span{font-family:var(--m);font-size:10px;padding:8px 6px;opacity:.6;border-left:1px solid #eeece4}
+.gl{display:grid;grid-template-columns:200px 1fr;align-items:center;border-bottom:1px solid #f0eee6;height:46px}
+.gl .n{font-size:12px;padding:0 10px;display:flex;gap:6px;align-items:center;white-space:nowrap;overflow:hidden}
+.gl .n i{font-style:normal;font-family:var(--m);font-size:9px;padding:1px 4px}
+.gl .faixa{position:relative;height:100%}
+.gl .seg{position:absolute;top:14px;height:18px}
+.s1{background:#cfcbbb}.s2{background:#9bd1c8}.s3{background:#6db3a8}.s4{background:var(--teal)}.s5{background:var(--lime)}
+.hoje{position:absolute;top:0;bottom:0;width:2px;background:var(--alerta);z-index:2}
+.hoje span{position:absolute;top:8px;left:6px;background:#fff;padding:1px 4px;font-family:var(--m);font-size:9.5px;color:var(--alerta);white-space:nowrap}
+.leg-g{display:flex;gap:14px;font-size:11.5px;align-items:center}
+.leg-g span{display:flex;gap:6px;align-items:center}.leg-g i{width:16px;height:9px}
+
+/* sharepoint */
+#v-sharepoint .grid{grid-template-columns:300px 1fr}
+.arvore{padding:10px 8px;font-size:12.5px;overflow:hidden}
+.arvore div{padding:5px 6px;display:flex;gap:7px;align-items:center;white-space:nowrap}
+.arvore div.on{background:#eef7d6;font-weight:600}
+.arvore .p1{padding-left:18px}.arvore .p2{padding-left:32px}.arvore .p3{padding-left:46px}
+.ic-pasta{width:14px;height:11px;background:#f2c94c;border-radius:1px;position:relative;flex:none}
+.ic-pasta::before{content:'';position:absolute;left:0;top:-3px;width:6px;height:3px;background:#f2c94c;border-radius:1px 1px 0 0}
+.arq td:first-child{display:flex;gap:8px;align-items:center}
+.ext{font-family:var(--m);font-size:9px;font-weight:700;color:#fff;padding:2px 4px;width:34px;text-align:center}
+.e-pdf{background:#d93025}.e-ai{background:#ff7c00}.e-xlsx{background:#1d6f42}.e-dxf{background:#555}.e-jpg{background:#2F6FEB}
+.sp-top{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--linha)}
+.sp-top .cam{font-size:12px;opacity:.7}
+.sp-top .cam b{opacity:1}
+
+/* status e report */
+#v-status .grid{grid-template-columns:1.15fr 1fr}
+.camp-l td:nth-child(3){width:170px}
+.rep{padding:18px 20px;display:flex;flex-direction:column;gap:10px;overflow:hidden}
+.rep .cab-r{display:flex;justify-content:space-between;align-items:baseline;border-bottom:3px solid var(--ink);padding-bottom:8px}
+.rep h2{font-family:var(--t);font-weight:900;font-size:26px;text-transform:uppercase}
+.rep .cab-r span{font-family:var(--m);font-size:10px;opacity:.6}
+.rep h4{font-family:var(--m);font-size:10px;letter-spacing:.08em;text-transform:uppercase;opacity:.6;margin-top:4px}
+.rep ul{padding-left:16px;font-size:12.5px;line-height:1.5}
+.rep .mini{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.rep .mini div{background:var(--paper);padding:8px 10px}
+.rep .mini b{display:block;font-family:var(--t);font-size:26px;line-height:1}
+.rep .mini small{font-size:10.5px;opacity:.7}
+.cad{padding:14px 16px}.cad .k{font-family:var(--m);font-size:10px;letter-spacing:.06em;text-transform:uppercase;opacity:.55;margin-bottom:10px}
+.ritmo{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.ritmo div{border-top:3px solid var(--teal);padding-top:8px}.ritmo b{display:block;font-family:var(--t);font-size:20px;text-transform:uppercase}.ritmo span{font-size:11.5px;opacity:.75;line-height:1.35}
+td{padding:12px 10px}
+.marca-sim{position:fixed;right:14px;bottom:10px;font-family:var(--m);font-size:10px;background:var(--ink);color:var(--lime);padding:5px 9px;letter-spacing:.06em;z-index:9}
+</style>
+</head>
+<body>
+<header>
+  <span class="logo">75<b>LAB</b> · Central de trade</span>
+  <span class="cli">Grupo Bombril · trade marketing</span>
+  <span class="busca">Buscar loja, projeto, peça ou ticket…</span>
+  <span class="sync"><i></i>Acervo sincronizado · 07/05/2027 09:42</span>
+  <span class="eu">MA</span>
+</header>
+<nav id="menu">
+  <span class="sec">Campo</span>
+  <button data-v="atendimento" class="on">Atendimento ao campo <span class="ct">12</span></button>
+  <button data-v="lojas">Base de lojas e layouts <span class="ct ok">412</span></button>
+  <span class="sec">Gestão</span>
+  <button data-v="cronograma">Cronograma integrado</button>
+  <button data-v="sharepoint">Acervo integrado</button>
+  <button data-v="status">Status e report</button>
+  <div class="rod">Simulação · dados de exemplo<br>nenhum dado de cliente</div>
+</nav>
+<main>
+
+<!-- ======================= atendimento -->
+<section class="view on" id="v-atendimento">
+  <div class="tit"><h1>Atendimento ao campo</h1><span class="sub">E-mail e WhatsApp na mesma caixa · cada conversa vira ticket ligado à loja e à peça</span>
+    <div class="acoes"><span class="bt">SLA 1 dia útil</span><span class="bt cheio">+ Novo ticket</span></div></div>
+  <div class="grid">
+    <div class="card inbox">
+      <div class="filtros"><span class="on">Abertos 12</span><span>WhatsApp 8</span><span>E-mail 4</span><span>Resolvidos hoje 9</span></div>
+      <div class="msg sel"><span class="av" style="background:#25D366">LS</span><div><b>Loja 0412 · Atacadão Osasco</b><p>Uma tela lateral da torre veio amassada na entrega. Tem reposição?</p><div class="tags"><span class="tag t-wa">WhatsApp</span><span class="tag t-al">Reposição</span></div></div></div>
+      <div class="msg"><span class="av" style="background:#2F6FEB">RF</span><div><b>Loja 0187 · Assaí Anhanguera</b><p>O móvel BL ainda não chegou. Tem previsão?</p><div class="tags"><span class="tag t-em">E-mail</span><span class="tag t-al">Não chegou</span></div></div></div>
+      <div class="msg"><span class="av" style="background:#25D366">PC</span><div><b>Loja 0233 · Max Barueri</b><p>Cesto montado e abastecido. Segue a foto.</p><div class="tags"><span class="tag t-wa">WhatsApp</span><span class="tag t-ok">Instalado</span></div></div></div>
+      <div class="msg"><span class="av" style="background:#25D366">JM</span><div><b>Loja 0691 · Guanabara Centro</b><p>Onde entra o stopper no novo GC do Sapólio?</p><div class="tags"><span class="tag t-wa">WhatsApp</span><span class="tag t-am">Montagem</span></div></div></div>
+      <div class="msg"><span class="av" style="background:#2F6FEB">AN</span><div><b>Loja 0118 · Atacadão Betim</b><p>O ponto mudou de lugar. Segue a planta nova em anexo.</p><div class="tags"><span class="tag t-em">E-mail</span><span class="tag t-ci">Base de lojas</span></div></div></div>
+      <div class="msg"><span class="av" style="background:#25D366">VR</span><div><b>Loja 0350 · Sam's Morumbi</b><p>A caçamba está sem Mini Rolinhos há dois dias.</p><div class="tags"><span class="tag t-wa">WhatsApp</span><span class="tag t-am">Ruptura</span></div></div></div>
+    </div>
+    <div class="card conversa">
+      <div class="cab"><b>Loja 0412 · Atacadão Osasco, SP</b><span class="tag t-wa">WhatsApp</span><span class="sla">Responder em 5h 48min</span></div>
+      <div class="fio">
+        <div class="bal sis">Ticket #2417 aberto · promotor identificado pelo número do WhatsApp · peça BOM-TR06-0412</div>
+        <div class="bal ele"><img src="../pecas/TR06.webp" alt="">Bom dia! Uma tela lateral da torre veio amassada na entrega. Tem como trocar só ela?<small>Lúcia · promotora · 09:31</small></div>
+        <div class="bal nos">Bom dia, Lúcia! Pelo QR, é a tela TR06-C3 do lado direito. A troca é só dela: separamos a peça e ela sai hoje, com chegada prevista para 09/05.<small>Mariana · 75 LAB · 09:44 ✓✓</small></div>
+        <div class="bal nos">Enquanto isso, o manual com a troca passo a passo, no celular: abra o QR da peça e toque em Reposição.<small>Mariana · 75 LAB · 09:45 ✓✓</small></div>
+        <div class="bal sis">Ocorrência registrada: reposição TR06-C3 · entra no relatório de avarias por fornecedor</div>
+      </div>
+      <div class="resp"><span>Responder pelo WhatsApp…</span><span class="bt">Modelos</span><span class="bt cheio">Enviar</span></div>
+    </div>
+    <div class="card loja-lado">
+      <div class="bloco"><div class="k">Loja ligada ao ticket</div><h3>Loja 0412</h3><dl><dt>Rede</dt><dd>Atacadão</dd><dt>Região</dt><dd>SP Capital</dd><dt>Promotora</dt><dd>Lúcia S.</dd><dt>Endereço</dt><dd>Osasco, SP</dd></dl></div>
+      <div class="bloco"><div class="k">Peça ligada ao ticket</div><img class="planta" src="../pecas/TR06-2.webp" alt="" style="object-position:center 25%"></div>
+      <div class="bloco"><div class="k">Peças do grupo nesta loja</div><ul class="pecas-l">
+        <li>Torre de lã de aço <span class="tag t-al">reposição</span></li>
+        <li>Móvel BL Atacadão <span class="tag t-ok">instalado</span></li>
+        <li>Display Sapólio <span class="tag t-ok">instalado</span></li>
+        <li>Capa de gôndola <span class="tag t-am">em trânsito</span></li></ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= base de lojas -->
+<section class="view" id="v-lojas">
+  <div class="tit"><h1>Base de lojas e layouts</h1><span class="sub">412 lojas de exemplo com rede, planta, fotos e zonas quentes · a mesma base do acervo</span>
+    <div class="acoes"><span class="bt">Exportar Excel</span><span class="bt cheio">Atualizar planta</span></div></div>
+  <div class="kpis"><div class="kpi"><small>Lojas na base</small><b>412</b><em>exemplo</em></div><div class="kpi"><small>Com planta atualizada</small><b>389</b><em>94%</em></div><div class="kpi"><small>Com foto da fachada</small><b>401</b><em>97%</em></div><div class="kpi ok"><small>Zonas mapeadas</small><b>214</b><em>nas redes prioritárias</em></div><div class="kpi"><small>Mudaram de layout</small><b>6</b><em>no último mês</em></div></div>
+  <div class="grid">
+    <div class="card" style="overflow:hidden">
+      <div class="mapa-f"><span class="on">Todas as redes</span><span>Atacadão 142</span><span>Assaí 118</span><span>Max 54</span><span>Sam's 36</span><span>Guanabara 62</span></div>
+      <table><thead><tr><th>Loja</th><th>Rede</th><th>Cidade</th><th>Planta</th><th>Pontos</th><th>Última atualização</th></tr></thead><tbody id="tbLojas"></tbody></table>
+    </div>
+    <div class="card ficha-l">
+      <img class="foto" src="../pecas/BL01.webp" alt="" style="object-position:center 30%">
+      <div class="bloco"><div class="k" style="font-family:var(--m);font-size:10px;opacity:.55;text-transform:uppercase">Loja 0412 · Atacadão</div><b style="font-family:var(--t);font-size:22px;text-transform:uppercase">Atacadão Osasco</b><div style="font-size:12px;opacity:.7">Região SP Capital · 5 pontos mapeados</div></div>
+      <div class="bloco"><div class="pontos"><span><i style="background:#E8412C"></i>Entrada e alameda</span><span><i style="background:#F2922A"></i>Ponta de gôndola</span><span><i style="background:#C0EE4E"></i>Corredor de limpeza</span><span><i style="background:#2F6FEB"></i>Cross</span><span><i style="background:#555"></i>Check-out</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= cronograma -->
+<section class="view" id="v-cronograma">
+  <div class="tit"><h1>Cronograma integrado</h1><span class="sub">Todos os projetos do grupo no mesmo calendário · cada um com as cinco etapas e a data de loja</span>
+    <div class="acoes"><span class="bt">Por marca</span><span class="bt">Por região</span><span class="bt cheio">Exportar</span></div></div>
+  <div class="leg-g"><span><i class="s1"></i>Diagnóstico</span><span><i class="s2"></i>Conceito</span><span><i class="s3"></i>Engenharia</span><span><i class="s4"></i>Produção</span><span><i class="s5"></i>Loja</span></div>
+  <div class="card gantt" id="gantt"></div>
+</section>
+
+<!-- ======================= sharepoint -->
+<section class="view" id="v-sharepoint">
+  <div class="tit"><h1>Acervo integrado</h1><span class="sub">O acervo fica no repositório de vocês · a central organiza e sincroniza por marca, projeto e peça</span>
+    <div class="acoes"><span class="bt">Abrir no repositório</span><span class="bt cheio">Compartilhar pasta</span></div></div>
+  <div class="grid">
+    <div class="card arvore">
+      <div><span class="ic-pasta"></span>Grupo Bombril · Trade</div>
+      <div class="p1"><span class="ic-pasta"></span>00 Base de lojas e zonas</div>
+      <div class="p1"><span class="ic-pasta"></span>01 Cronograma integrado</div>
+      <div class="p1"><span class="ic-pasta"></span>Bombril e Q'Lustro</div>
+      <div class="p2"><span class="ic-pasta"></span>Móvel BL</div>
+      <div class="p2"><span class="ic-pasta"></span>Torre de lã de aço</div>
+      <div class="p3"><span class="ic-pasta"></span>01 Conceito e 3D</div>
+      <div class="p3 on"><span class="ic-pasta"></span>02 Executivo e arte-final</div>
+      <div class="p3"><span class="ic-pasta"></span>03 Cotação e QA</div>
+      <div class="p3"><span class="ic-pasta"></span>04 Manual e reposição</div>
+      <div class="p1"><span class="ic-pasta"></span>Sapólio</div>
+      <div class="p1"><span class="ic-pasta"></span>Limpol, Mon Bijou e Kalipto</div>
+      <div class="p1"><span class="ic-pasta"></span>Reports</div>
+    </div>
+    <div class="card" style="overflow:hidden">
+      <div class="sp-top"><span class="cam">Trade › Bombril e Q'Lustro › Torre › <b>02 Executivo e arte-final</b></span><span class="tag t-ok" style="margin-left:auto">Sincronizado</span></div>
+      <table class="arq"><thead><tr><th>Arquivo</th><th>Uso</th><th>Versão</th><th>Aprovado por</th><th>Modificado</th></tr></thead><tbody>
+        <tr><td><span class="ext e-pdf">PDF</span>TR06_executivo.pdf</td><td>Fábrica</td><td>R01</td><td>Engenharia 75 LAB</td><td>18/02/2027</td></tr>
+        <tr><td><span class="ext e-dxf">DXF</span>TR06_facas-1x1.dxf</td><td>Corte</td><td>R01</td><td>Engenharia 75 LAB</td><td>18/02/2027</td></tr>
+        <tr><td><span class="ext e-dxf">DXF</span>TR06_nesting.dxf</td><td>Plano de corte</td><td>R01</td><td>Engenharia 75 LAB</td><td>24/02/2027</td></tr>
+        <tr><td><span class="ext e-pdf">PDF</span>TR06_lateral-base_AF.pdf</td><td>Impressão</td><td>v3 · final</td><td>Trade · 26/02</td><td>26/02/2027</td></tr>
+        <tr><td><span class="ext e-ai">AI</span>TR06_oval-topo_AF.ai</td><td>Impressão</td><td>v2 · final</td><td>Trade · 27/02</td><td>27/02/2027</td></tr>
+        <tr><td><span class="ext e-xlsx">XLSX</span>TR06_lista-de-materiais.xlsx</td><td>Cotação</td><td>v5</td><td>Compras · 20/02</td><td>20/02/2027</td></tr>
+        <tr><td><span class="ext e-xlsx">XLSX</span>TR06_distribuicao-por-regiao.xlsx</td><td>7 regiões</td><td>v2</td><td>Trade · 03/03</td><td>03/03/2027</td></tr>
+        <tr><td><span class="ext e-jpg">JPG</span>TR06_renders (6)</td><td>Aprovação</td><td>final</td><td>Trade · 26/02</td><td>26/02/2027</td></tr>
+        <tr><td><span class="ext e-pdf">PDF</span>TR06_manual-e-reposicao.pdf</td><td>Campo</td><td>v1</td><td>Produção 75 LAB</td><td>02/03/2027</td></tr>
+      </tbody></table>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= status e report -->
+<section class="view" id="v-status">
+  <div class="tit"><h1>Status e report</h1><span class="sub">O que está em cada etapa agora, e o relatório que chega a vocês sem ninguém pedir</span>
+    <div class="acoes"><span class="bt">Status quinzenal</span><span class="bt cheio">Gerar report</span></div></div>
+  <div class="kpis"><div class="kpi"><small>Projetos em produção</small><b>6</b><em>de 17 no exemplo</em></div><div class="kpi ok"><small>Peças aprovadas no mês</small><b>48</b><em>92% na 1ª ou 2ª rodada</em></div><div class="kpi ok"><small>Peças instaladas</small><b>81%</b><em>com foto e GPS</em></div><div class="kpi"><small>Tickets abertos</small><b>12</b><em>3 de reposição</em></div><div class="kpi"><small>Atrasos da semana</small><b>2</b><em>esperando aprovação</em></div></div>
+  <div class="grid">
+    <div style="display:flex;flex-direction:column;gap:14px;min-height:0"><div class="card" style="overflow:hidden"><table class="camp-l"><thead><tr><th>Projeto</th><th>Marca</th><th>Etapa</th><th>Próximo marco</th><th>Situação</th></tr></thead><tbody id="tbCamp"></tbody></table></div>
+    <div class="card cad"><div class="k">Cadência de gestão da conta</div>
+      <div class="ritmo"><div><b>Toda hora</b><span>painel ao vivo e atendimento ao campo</span></div><div><b>Semanal</b><span>pauta com o trade e report por e-mail</span></div><div><b>Quinzenal</b><span>status de cada projeto, etapa a etapa</span></div><div><b>Mensal</b><span>fechamento de ciclo e indicadores</span></div><div><b>Trimestral</b><span>estratégia e calendário do próximo trimestre</span></div></div></div></div>
+    <div class="card rep">
+      <div class="cab-r"><h2>Report semanal · semana 19</h2><span>enviado sex 07/05/2027 · 18h</span></div>
+      <div class="mini"><div><b>94%</b><small>peças entregues</small></div><div><b>81%</b><small>instaladas</small></div><div><b>3,2 d</b><small>chegada à instalação</small></div><div><b>27</b><small>tickets na semana</small></div></div>
+      <h4>O que aconteceu</h4><ul><li>Torre de lã de aço: 121 lojas instaladas com foto; 9 sem leitura viraram ocorrência.</li><li>Display Sapólio entrou em produção com 3 orçamentos e protótipo aprovado.</li><li>6 lojas mudaram de layout: plantas atualizadas no acervo.</li></ul>
+      <h4>O que precisa de vocês</h4><ul><li>Aprovar 4 peças do enxoval Cremoso (esperando há 2 dias úteis).</li><li>Confirmar a distribuição da Capa de gôndola até 12/05.</li></ul>
+    </div>
+  </div>
+</section>
+
+</main>
+<span class="marca-sim">Simulação · dados de exemplo</span>
+<script>
+(function(){
+  const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+  function vista(v){$$('#menu button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));$$('.view').forEach(s=>s.classList.toggle('on',s.id==='v-'+v));history.replaceState(null,'','?v='+v);}
+  $$('#menu button').forEach(b=>b.addEventListener('click',()=>vista(b.dataset.v)));
+  const q=new URLSearchParams(location.search).get('v');if(q)vista(q);
+  // base de lojas
+  const F=['Atacadão','Assaí','Max','Sam\'s','Guanabara','Atacadão'],C=['São Paulo/SP','Rio de Janeiro/RJ','Belo Horizonte/MG','Curitiba/PR','Recife/PE','Salvador/BA','Porto Alegre/RS','Fortaleza/CE','Goiânia/GO','Campinas/SP'];
+  let s=7;const r=()=>(s=(s*16807)%2147483647)/2147483647;
+  const lojas=[412,118,233,350,587,691,744,102,256,309,478,520,615].map((n,i)=>({n:String(n).padStart(4,'0'),f:F[Math.floor(r()*6)],c:C[Math.floor(r()*10)],p:r()>.1,pt:2+Math.floor(r()*4),d:String(1+Math.floor(r()*28)).padStart(2,'0')+'/0'+(1+Math.floor(r()*4))+'/2027'}));
+  lojas[0].f='Atacadão';lojas[0].c='Osasco/SP';
+  $('#tbLojas').innerHTML=lojas.map((l,i)=>`<tr class="${i?'':'sel'}"><td><b>Loja ${l.n}</b></td><td>${l.f}</td><td>${l.c}</td><td>${l.p?'<span class="tag t-ok">atualizada</span>':'<span class="tag t-am">pedir nova</span>'}</td><td>${l.pt} pontos</td><td>${l.d}</td></tr>`).join('');
+  // cronograma integrado: 100 dias úteis até a loja, em cinco etapas (10/20/20/35/15)
+  const camp=[['Móvel BL Atacadão','BOM','2027-04-20'],['Móvel BL Assaí','BOM','2027-04-20'],['Ilha BL','BOM','2027-05-18'],['Displays 3 e 6 fardos','BOM','2027-03-30'],['Torre de lã de aço','BOM','2027-03-16'],['Cesto Rede Max','BOM','2027-03-02'],['Modular Max','BOM','2027-05-04'],['Display Sapólio','SAP','2027-04-06'],['Premium Espuma Ativa','SAP','2027-06-15'],['GC Sapólio','SAP','2027-05-25'],['Enxoval Cremoso','SAP','2027-07-06'],['Capa de gôndola Limpol','LIM','2027-06-01'],['Kalipto + enxoval','KAL','2027-06-22'],['Institucional Mon Bijou','MBJ','2027-07-20']];
+  const D=x=>new Date(x+'T12:00:00'),T0=D('2027-01-01'),T1=D('2027-12-31'),pc=d=>Math.max(0,(d-T0)/(T1-T0)*100);
+  const du=(d,n)=>{d=new Date(d);while(n>0){d.setDate(d.getDate()-1);const w=d.getDay();if(w&&w<6)n--;}return d;};
+  const g=$('#gantt');let h='<div class="meses"><span></span>'+['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'].map(m=>'<span>'+m+'</span>').join('')+'</div>';
+  camp.forEach(([n,c,f])=>{const fim=D(f);const marcos=[100,90,70,50,15,0].map(k=>du(fim,k));
+    let segs='';for(let k=0;k<5;k++){const a=pc(marcos[k]),b=pc(marcos[k+1]);if(b>0)segs+=`<i class="seg s${k+1}" style="left:${a}%;width:${b-a}%"></i>`;}
+    h+=`<div class="gl"><span class="n"><i class="tag ${c==='BOM'?'t-am':c==='SAP'?'t-em':'t-ok'}">${c}</i>${n}</span><span class="faixa">${segs}</span></div>`;});
+  g.innerHTML=h+'<i class="hoje" id="hoje"><span>hoje · 07/05</span></i>';
+  requestAnimationFrame(()=>{const f=g.querySelector('.faixa');const x=f.offsetLeft+f.offsetWidth*pc(D('2027-05-07'))/100;$('#hoje').style.left=x+'px';});
+  // status
+  const st=[['Torre de lã de aço','Bombril','Loja','16/03 · na loja','<span class="tag t-ok">no prazo</span>',90],['Display Sapólio','Sapólio','Produção','06/04 · loja','<span class="tag t-ok">no prazo</span>',72],['Móvel BL Atacadão','Multimarcas','Produção','20/04 · loja','<span class="tag t-am">atenção</span>',60],['Capa de gôndola','Limpol','Engenharia','01/06 · loja','<span class="tag t-ok">no prazo</span>',45],['Kalipto + enxoval','Kalipto','Conceito','22/06 · loja','<span class="tag t-ok">no prazo</span>',25],['Institucional','Mon Bijou','Diagnóstico','20/07 · loja','<span class="tag t-ok">no prazo</span>',10]];
+  $('#tbCamp').innerHTML=st.map(x=>`<tr><td><b>${x[0]}</b></td><td>${x[1]}</td><td>${x[2]}<div class="bar"><i style="width:${x[5]}%"></i></div></td><td>${x[3]}</td><td>${x[4]}</td></tr>`).join('');
+})();
+</script>
+</body>
+</html>

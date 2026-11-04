@@ -1,0 +1,328 @@
+(function(){
+  'use strict';
+  const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+  const stage=$('#stage'), telas=$$('.tela'), wipe=$('#wipe'), prog=$('#prog i'), cont=$('#cont'), capTxt=$('#capTxt');
+  const SVGNS='http://www.w3.org/2000/svg';
+  // ?pdf=1: cada tela já no estado final, sem transição nem temporizador (usado para gerar o PDF)
+  const modoPdf=new URLSearchParams(location.search).has('pdf');
+  if(modoPdf)document.documentElement.classList.add('pdf');
+  const reduz=matchMedia('(prefers-reduced-motion: reduce)').matches||modoPdf;
+  let atual=0, escalaAtual=1, emTransicao=false, pendente=null;
+  const total=telas.length, dd=n=>String(n).padStart(2,'0');
+  const autos={};let autoAtivos=[]; // temporizador dos botões (ver mais abaixo)
+
+  /* ---------------------------------------------------------- miolo: o conteúdo de cada tela encolhe por igual, centralizado,
+     e o fundo continua ocupando a tela inteira (o que tem a classe sangra fica fora do miolo) */
+  telas.forEach(t=>{
+    const m=document.createElement('div');m.className='miolo';
+    [...t.childNodes].forEach(n=>{if(!(n.nodeType===1&&n.classList.contains('sangra')))m.appendChild(n);});
+    t.appendChild(m);
+  });
+
+  /* ---------------------------------------------------------- palco */
+  function escala(){
+    escalaAtual=Math.min(innerWidth/1600,innerHeight/900);
+    stage.style.transform='scale('+escalaAtual+')';
+  }
+  addEventListener('resize',escala);escala();
+
+  /* ---------------------------------------------------------- contadores */
+  function contar(el){
+    const alvo=parseFloat(el.dataset.conta),casas=+el.dataset.casas||0,t0=performance.now(),dur=1300;
+    const fmt=new Intl.NumberFormat('pt-BR',{minimumFractionDigits:casas,maximumFractionDigits:casas});
+    if(reduz){el.textContent=fmt.format(alvo);return;}
+    (function passo(t){const p=Math.min(1,(t-t0)/dur),v=alvo*(1-Math.pow(1-p,3));el.textContent=fmt.format(v);if(p<1)requestAnimationFrame(passo);})(t0);
+  }
+
+  /* ---------------------------------------------------------- navegação */
+  const aoEntrar={};
+  function aplicar(n){
+    telas[atual].querySelectorAll('video').forEach(v=>v.pause());
+    pararAutos();
+    telas[atual].classList.remove('ativa');
+    atual=n;const t=telas[n];
+    t.classList.add('ativa');
+    stage.className='t-'+({claro:'claro',claro2:'claro',escuro:'escuro',lime:'lime',foto:'foto'}[t.dataset.tema]||'escuro')+(n===0?' capa':'');
+    capTxt.textContent=t.dataset.cap||'';
+    prog.style.width=((n+1)/total*100)+'%';
+    cont.textContent=dd(n+1)+' / '+dd(total);
+    $('#ant').disabled=n===0;$('#prox').disabled=n===total-1;
+    t.querySelectorAll('[data-conta]').forEach(contar);
+    $$('#sumLista button').forEach(b=>b.classList.toggle('atual',+b.dataset.i===n));
+    history.replaceState(null,'','#'+(n+1));
+    const fn=aoEntrar[t.classList[1]];if(fn)fn(t);
+    iniciarAutos(t);
+  }
+  function ir(n){
+    n=Math.max(0,Math.min(total-1,n));
+    if(emTransicao){pendente=n;return;}
+    if(n===atual)return;
+    if(reduz||!wipe.animate){aplicar(n);return;}
+    const dir=n>atual?1:-1, paraLime=telas[n].dataset.tema==='lime';
+    wipe.classList.toggle('ink',paraLime);
+    wipe.querySelector('img').src=paraLime?'assets/75lab-lime.png':'assets/75lab-black.png';
+    const de=dir>0?'inset(0 0 0 100%)':'inset(0 100% 0 0)', meio='inset(0 0 0 0)', para=dir>0?'inset(0 100% 0 0)':'inset(0 0 0 100%)';
+    emTransicao=true;
+    const ease='cubic-bezier(.7,0,.3,1)';
+    wipe.animate([{clipPath:de},{clipPath:meio}],{duration:360,easing:ease,fill:'forwards'}).onfinish=()=>{
+      aplicar(n);
+      wipe.animate([{clipPath:meio},{clipPath:para}],{duration:420,easing:ease,fill:'forwards'}).onfinish=()=>{emTransicao=false;if(pendente!==null){const p=pendente;pendente=null;ir(p);}};
+    };
+  }
+  addEventListener('hashchange',()=>{const n=parseInt(location.hash.slice(1),10);if(!isNaN(n))ir(n-1);});
+  $('#ant').addEventListener('click',e=>{e.stopPropagation();ir(atual-1);});
+  $('#prox').addEventListener('click',e=>{e.stopPropagation();ir(atual+1);});
+  // data-ir aponta para o id da tela (ou o número dela, contado de 1)
+  const indice=v=>/^\d+$/.test(v)?+v-1:telas.findIndex(t=>t.id===v);
+  $$('[data-ir]').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();ir(indice(b.dataset.ir));}));
+
+  /* sumário */
+  const sum=$('#sumario'), lista=$('#sumLista');
+  let capAnt='';
+  telas.forEach((t,i)=>{
+    const c=(t.dataset.cap||'').match(/^\((\d+)\) (.*)$/);
+    if(c&&c[1]!==capAnt){capAnt=c[1];const h=document.createElement('li');h.className='cap-s';h.textContent=c[1]+' · '+c[2];lista.appendChild(h);}
+    if(t.classList.contains('s-cap'))return;
+    const li=document.createElement('li'), b=document.createElement('button');
+    b.innerHTML='<b>'+dd(i+1)+'</b>'+t.dataset.titulo;b.dataset.cursor='Ir';b.dataset.i=i;
+    b.addEventListener('click',e=>{e.stopPropagation();fecharSum();setTimeout(()=>ir(i),60);});
+    li.appendChild(b);lista.appendChild(li);
+  });
+  function abrirSum(){sum.classList.add('aberto');}
+  function fecharSum(){sum.classList.remove('aberto');}
+  $$('[data-sumario]').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();abrirSum();}));
+  $('.fechar',sum).addEventListener('click',e=>{e.stopPropagation();fecharSum();});
+
+  /* teclado, clique e toque */
+  addEventListener('keydown',e=>{
+    if(caixa.classList.contains('aberta')){if(e.key==='Escape')fecharCaixa();return;}
+    if(sum.classList.contains('aberto')){if(e.key==='Escape')fecharSum();return;}
+    if(['ArrowRight','PageDown',' ','Enter'].includes(e.key)){e.preventDefault();ir(atual+1);}
+    else if(['ArrowLeft','PageUp','Backspace'].includes(e.key)){e.preventDefault();ir(atual-1);}
+    else if(e.key==='Home')ir(0);else if(e.key==='End')ir(total-1);
+    else if(e.key==='m'||e.key==='M')sum.classList.contains('aberto')?fecharSum():abrirSum();
+  });
+  const INTERATIVO='a,button,input,.amplia,[data-cursor],#gantt,#sumario,.ct,model-viewer,.celular,.janela,.tela-s,.janela-c,.dentro li,.trilha-cap span';
+  $('#wrap').addEventListener('click',e=>{
+    if(e.target.closest(INTERATIVO))return;
+    if(sum.classList.contains('aberto'))return;
+    ir(e.clientX>innerWidth/2?atual+1:atual-1);
+  });
+  let x0=null,y0=null;
+  addEventListener('touchstart',e=>{x0=e.touches[0].clientX;y0=e.touches[0].clientY;},{passive:true});
+  addEventListener('touchend',e=>{
+    if(x0===null)return;const dx=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y0;
+    if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)&&!e.target.closest('#gantt,model-viewer'))ir(dx<0?atual+1:atual-1);x0=null;
+  });
+
+  /* lightbox */
+  const caixa=$('#caixa');
+  function fecharCaixa(){caixa.classList.remove('aberta');}
+  $$('[data-amplia]').forEach(el=>el.addEventListener('click',e=>{
+    e.stopPropagation();$('#cxImg').src=el.dataset.amplia;$('#cxTxt').textContent=el.dataset.legenda||'';caixa.classList.add('aberta');
+  }));
+  caixa.addEventListener('click',e=>{if(e.target===caixa||e.target.closest('.fechar'))fecharCaixa();});
+
+  /* ---------------------------------------------------------- cursor e luz */
+  const cur=$('#cursor'),anel=$('#anel'),anelTxt=$('#anelTxt');
+  let mx=innerWidth/2,my=innerHeight/2,ax=mx,ay=my;
+  addEventListener('mousemove',e=>{
+    document.body.classList.add('tem-mouse');mx=e.clientX;my=e.clientY;
+    cur.style.transform='translate('+mx+'px,'+my+'px)';
+    const alvo=e.target.closest('[data-cursor],a,button,.amplia');
+    anel.classList.toggle('sobre',!!alvo);
+    anelTxt.textContent=alvo?(alvo.dataset.cursor||'Ir'):'';
+    const r=stage.getBoundingClientRect();
+    stage.style.setProperty('--mx',((mx-r.left)/escalaAtual)+'px');stage.style.setProperty('--my',((my-r.top)/escalaAtual)+'px');
+  },{passive:true});
+  (function segue(){ax+=(mx-ax)*.2;ay+=(my-ay)*.2;anel.style.transform='translate('+ax+'px,'+ay+'px)';requestAnimationFrame(segue);})();
+  addEventListener('mousedown',()=>document.body.classList.add('clicou'));
+  addEventListener('mouseup',()=>document.body.classList.remove('clicou'));
+  addEventListener('touchstart',()=>document.body.classList.remove('tem-mouse'),{passive:true});
+  $('#verAssim').addEventListener('click',()=>document.body.classList.add('forcar'));
+
+  /* ---------------------------------------------------------- 07 quatro frentes */
+  (function(){
+    const dados=$('#freDados').content.querySelectorAll('i');
+    $$('.s-fre .frente').forEach(b=>b.addEventListener('click',e=>{
+      e.stopPropagation();const i=+b.dataset.f,d=dados[i];
+      $$('.s-fre .frente').forEach(x=>x.classList.toggle('on',x===b));
+      $('#freN').textContent='Frente 0'+(i+1);
+      const box=$('#freBox');box.innerHTML='<h3></h3><p></p>';box.querySelector('h3').textContent=d.dataset.t;box.querySelector('p').textContent=d.textContent;
+      box.classList.remove('troca');void box.offsetWidth;box.classList.add('troca');
+    }));
+  })();
+
+  /* ---------------------------------------------------------- 22 riscos */
+  (function(){
+    $$('.s-ris .risco button').forEach(b=>b.addEventListener('click',e=>{
+      e.stopPropagation();const r=b.parentElement,ab=r.classList.contains('aberto');
+      $$('.s-ris .risco').forEach(x=>x.classList.remove('aberto'));if(!ab)r.classList.add('aberto');
+    }));
+  })();
+
+  /* ---------------------------------------------------------- depoimento Alltak */
+  (function(){
+    const v=$('#vidDep'),cel=v.closest('.celular'),pr=$('#progDep');
+    const alterna=e=>{e.stopPropagation();if(v.paused){v.play();}else{v.pause();}};
+    $('#playDep').addEventListener('click',alterna);
+    v.addEventListener('click',alterna);
+    v.addEventListener('play',()=>cel.classList.add('tocando'));
+    v.addEventListener('pause',()=>cel.classList.remove('tocando'));
+    v.addEventListener('ended',()=>{cel.classList.remove('tocando');v.load();});
+    v.addEventListener('timeupdate',()=>{pr.style.width=(v.duration?v.currentTime/v.duration*100:0)+'%';});
+    // a fila de vídeos troca o que toca no celular
+    const vids=$$('#filaVid .vid');
+    vids.forEach(b=>b.addEventListener('click',e=>{
+      e.stopPropagation();vids.forEach(x=>x.classList.toggle('on',x===b));
+      v.pause();v.poster=b.dataset.poster;v.src=b.dataset.src;pr.style.width='0';
+      $('#durDep').textContent='Assistir · '+b.dataset.dur;v.play();
+    }));
+  })();
+
+  /* ---------------------------------------------------------- capas de capítulo: trilha e itens levam à tela */
+  (function(){
+    const capas=telas.filter(t=>t.classList.contains('s-cap'));
+    capas.forEach(c=>{
+      const n=c.dataset.capitulo,i0=telas.indexOf(c);
+      c.querySelectorAll('.trilha-cap span').forEach(s=>{
+        s.classList.toggle('on',s.dataset.c===n);s.classList.toggle('feito',s.dataset.c<n);s.dataset.cursor='Ir';
+        s.addEventListener('click',e=>{e.stopPropagation();const alvo=telas.findIndex(t=>(t.dataset.cap||'').startsWith('('+s.dataset.c+')'));if(alvo>=0)ir(alvo);});
+      });
+      c.querySelectorAll('.dentro li').forEach((li,k)=>{li.dataset.cursor='Ir';li.addEventListener('click',e=>{e.stopPropagation();ir(i0+1+k);});});
+    });
+  })();
+
+  /* ---------------------------------------------------------- frentes: no PDF, as quatro de uma vez */
+  (function(){
+    const box=$('.s-fre .todas-f');if(!box)return;
+    $('#freDados').content.querySelectorAll('i').forEach((d,k)=>{const el=document.createElement('div');el.innerHTML='<span>0'+(k+1)+'</span><b></b><p></p>';el.querySelector('b').textContent=d.dataset.t;el.querySelector('p').textContent=d.textContent;box.appendChild(el);});
+  })();
+
+  /* ---------------------------------------------------------- simulador do Ariuno */
+  (function(){
+    const lis=$$('#simPassos li'),imgs=$$('#simVista img'),url=$('#simUrl'),n=$('#simuN');
+    if(!lis.length)return;
+    let k=0;
+    function mostra(i){
+      k=(i+lis.length)%lis.length;
+      lis.forEach((l,j)=>{l.classList.toggle('on',j===k);l.classList.toggle('feito',j<k);});
+      const im=+lis[k].dataset.img;imgs.forEach((m,j)=>m.classList.toggle('on',j===im));
+      url.textContent=imgs[im].dataset.url;n.textContent='Passo '+(k+1)+' de '+lis.length;
+      $$('.s-simu .fases span').forEach(f=>f.classList.toggle('on',f.className.indexOf('f-'+lis[k].dataset.fase)>=0));
+    }
+    lis.forEach((l,i)=>l.querySelector('button').addEventListener('click',e=>{e.stopPropagation();mostra(i);}));
+    $('#simAnt').addEventListener('click',e=>{e.stopPropagation();mostra(k-1);});
+    $('#simProx').addEventListener('click',e=>{e.stopPropagation();mostra(k+1);});
+    aoEntrar['s-simu']=()=>mostra(0);
+    roteiro('s-simu',{itens:()=>lis.map(l=>l.querySelector('button')),texto:i=>lis[i].textContent,extra:1500});
+  })();
+
+  /* ---------------------------------------------------------- central da rede: módulos */
+  (function(){
+    const lis=$$('#modsCentral li'),imgs=$$('#vistaCentral img'),abrir=$('#abrirCentral');
+    if(!lis.length)return;
+    function mostra(i){lis.forEach((l,j)=>l.classList.toggle('on',j===i));imgs.forEach((m,j)=>m.classList.toggle('on',j===i));abrir.href='assets/rede/central.html?v='+lis[i].querySelector('button').dataset.v;}
+    lis.forEach((l,i)=>l.querySelector('button').addEventListener('click',e=>{e.stopPropagation();mostra(i);}));
+    aoEntrar['s-central']=()=>mostra(0);
+    roteiro('s-central',{itens:()=>lis.map(l=>l.querySelector('button')),texto:i=>lis[i].textContent,extra:2500});
+  })();
+
+  /* ---------------------------------------------------------- 3D e AR nos cases */
+  (function(){
+    let carregou=false;
+    function liga(mv,src,ios){mv.classList.add('carregando');mv.setAttribute('src',src);if(ios)mv.setAttribute('ios-src',ios);}
+    $$('model-viewer').forEach(mv=>mv.addEventListener('load',()=>mv.classList.remove('carregando')));
+    // o visualizador 3D só é baixado quando uma tela com modelo aparece (cases e AR ao vivo)
+    function ligaModelos(t){
+      if(!carregou){carregou=true;const sc=document.createElement('script');sc.type='module';sc.src='assets/vendor/model-viewer.min.js';document.head.appendChild(sc);}
+      t.querySelectorAll('model-viewer').forEach(mv=>{if(modoPdf)mv.removeAttribute('auto-rotate');if(!mv.getAttribute('src'))liga(mv,mv.dataset.src,mv.dataset.ios);});
+    }
+    aoEntrar['s-cases']=ligaModelos;
+    aoEntrar['s-arb']=ligaModelos;
+  })();
+
+  /* ---------------------------------------------------------- painel do QR */
+  (function(){
+    const abas=$$('#qrAbas button'),vistas=$$('#qrVista>div');
+    abas.forEach((b,k)=>b.addEventListener('click',e=>{e.stopPropagation();abas.forEach(x=>x.classList.toggle('on',x===b));vistas.forEach((v,j)=>v.classList.toggle('on',j===k));}));
+    // cada vista desce devagar pela tela do painel quando ela é mais alta que a janela
+    vistas.forEach(v=>v.classList.add('pan'));
+  })();
+
+  /* ---------------------------------------------------------- temporizador
+     Os botões de cada tela abrem sozinhos, um de cada vez, com tempo para ler.
+     O primeiro clique da pessoa dentro da tela para o temporizador até ela sair e voltar. */
+  function roteiro(cls,cfg){(autos[cls]=autos[cls]||[]).push(cfg);}
+  // PDF: tela com botões vira uma página por botão (fonte/gerar-pdf.mjs chama estas duas)
+  const SO_UMA_PAGINA=['s-ris','s-perf'];
+  const cfgPdf=()=>{const t=$('.tela.ativa');return SO_UMA_PAGINA.includes(t.classList[1])?null:[t,(autos[t.classList[1]]||[])[0]];};
+  window.__pdfEstados=()=>{const r=cfgPdf();if(!r||!r[1])return 0;const n=r[1].itens(r[0]).length;return n>1?n:0;};
+  window.__pdfEstado=k=>{const [t,c]=cfgPdf();c.itens(t)[k].click();};
+  // tempo de leitura: 3 s mais 45 ms por letra, entre 4,5 e 12 s
+  const leitura=txt=>Math.max(4500,Math.min(12000,3000+String(txt||'').replace(/\s+/g,' ').trim().length*45));
+  function pararAutos(){autoAtivos.forEach(clearTimeout);autoAtivos=[];$$('.relogio-auto').forEach(r=>r.remove());}
+  function iniciarAutos(t){
+    if(modoPdf)return;
+    (autos[t.classList[1]]||[]).forEach(cfg=>{
+      const itens=cfg.itens(),n=itens.length;if(!n)return;
+      const ms=k=>cfg.ms?cfg.ms(k):leitura(cfg.texto?cfg.texto(k):itens[k].textContent)+(cfg.extra||0);
+      let i=cfg.inicio?cfg.inicio():Math.max(0,itens.findIndex(x=>x.matches('.on,.aberto')||x.parentElement.classList.contains('aberto')));
+      function relogio(k,dur){
+        const alvo=itens[k];
+        $$('.relogio-auto',t).forEach(r=>{if(r.parentElement&&itens.includes(r.parentElement))r.remove();});
+        if(getComputedStyle(alvo).position==='static')alvo.style.position='relative';
+        const r=document.createElement('i');r.className='relogio-auto';alvo.appendChild(r);
+        r.style.transitionDuration=dur+'ms';void r.offsetWidth;r.classList.add('corre');
+      }
+      function passo(){
+        if(i+1>=n&&cfg.laco===false){$$('.relogio-auto',t).forEach(r=>r.remove());return;}
+        i=(i+1)%n;itens[i].click();
+        if(i+1>=n&&cfg.laco===false)return;
+        const d=ms(i);relogio(i,d);autoAtivos.push(setTimeout(passo,d));
+      }
+      if(i<0){autoAtivos.push(setTimeout(passo,cfg.primeiro||2500));return;}
+      const d=ms(i);relogio(i,d);autoAtivos.push(setTimeout(passo,d));
+    });
+  }
+  // clique de verdade da pessoa (não o do temporizador) dentro da tela para tudo
+  stage.addEventListener('pointerdown',e=>{if(e.isTrusted&&e.target.closest('.tela.ativa'))pararAutos();},true);
+
+  const textoDe=id=>k=>$(id).content.querySelectorAll('i')[k].textContent;
+  roteiro('s-fre',{itens:()=>$$('.s-fre .frente'),texto:textoDe('#freDados')});
+  roteiro('s-qr',{itens:()=>$$('#qrAbas button'),ms:()=>8000});
+  roteiro('s-ris',{itens:()=>$$('.s-ris .risco button'),texto:k=>$$('.s-ris .risco')[k].textContent});
+
+  /* ---------------------------------------------------------- telas novas do grupo Bombril: abas genéricas */
+  function abas(cls,cfg){
+    cfg=cfg||{};
+    const t=$('.'+cls);if(!t)return;
+    const bts=$$('[data-aba]',t),pns=$$('[data-painel]',t);
+    const mostra=k=>{bts.forEach((b,j)=>b.classList.toggle('on',j===k));pns.forEach((p,j)=>p.classList.toggle('on',j===k));if(cfg.aoMudar)cfg.aoMudar(k,t);};
+    bts.forEach((b,k)=>b.addEventListener('click',e=>{e.stopPropagation();mostra(k);}));
+    mostra(0);
+    roteiro(cls,{itens:()=>bts,texto:k=>pns[k].textContent,extra:cfg.extra||1000});
+  }
+  abas('s-design');abas('s-port',{extra:3000});abas('s-cota');abas('s-lead');
+  abas('s-zonas',{aoMudar:(k,t)=>$$('.planta [data-z]',t).forEach(z=>z.classList.toggle('on',+z.dataset.z===k))});
+  /* loja perfeita: cada critério soma na nota */
+  (function(){
+    const cs=$$('.s-perf .crit'),N=$('#perfN'),B=$('#perfB'),T=$('#perfT');if(!cs.length)return;
+    function conta(){const v=cs.filter(c=>c.classList.contains('on')).reduce((a,c)=>a+ +c.dataset.p,0);N.textContent=v;B.style.width=v+'%';
+      T.textContent=v===0?'Comece marcando o que está certo na loja':v<60?'Loja abaixo da régua: abre plano de ação':v<85?'Loja boa: faltam pontos para ser perfeita':v<100?'Quase lá':'Loja perfeita';}
+    cs.forEach(c=>c.addEventListener('click',e=>{e.stopPropagation();c.classList.toggle('on');conta();}));
+    if(modoPdf)cs.forEach(c=>c.classList.add('on'));
+    conta();
+    roteiro('s-perf',{itens:()=>cs,inicio:()=>-1,primeiro:1800,laco:false,ms:()=>1300});
+    aoEntrar['s-perf']=()=>{if(!modoPdf){cs.forEach(c=>c.classList.remove('on'));conta();}};
+  })();
+  /* janelas embutidas: só carregam quando a tela aparece */
+  ['s-inst','s-click'].forEach(k=>{aoEntrar[k]=t=>$$('iframe[data-src]',t).forEach(f=>{if(!f.getAttribute('src'))f.src=f.dataset.src;});});
+
+  /* ---------------------------------------------------------- início */
+  const h=parseInt(location.hash.slice(1),10);
+  const n0=isNaN(h)?0:Math.max(0,Math.min(total-1,h-1));
+  telas.forEach(t=>t.classList.remove('ativa'));atual=n0;telas[n0].classList.add('ativa');
+  atual=n0===0?1:0;aplicar(n0); // força a primeira aplicação
+  telas.forEach((t,i)=>{if(i!==n0)t.classList.remove('ativa');});
+})();
