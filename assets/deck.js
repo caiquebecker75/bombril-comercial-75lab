@@ -304,7 +304,7 @@
     mostra(0);
     roteiro(cls,{itens:()=>bts,texto:k=>pns[k]?pns[k].textContent:'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',extra:cfg.extra||1000});
   }
-  abas('s-design');abas('s-cota');abas('s-lead');abas('s-fol');abas('s-cub');abas('s-mont');
+  abas('s-design');abas('s-cota');abas('s-lead');abas('s-fol');abas('s-mont');
   ['s-p0','s-p1','s-p2','s-p3'].forEach(c=>abas(c,{extra:4000}));
   abas('s-mapa',{extra:2500,aoMudar:(k,t)=>{$$('[data-zona]',t).forEach(z=>z.classList.toggle('on',k===0||+z.dataset.zona===k-1));$('.palco-m',t).classList.toggle('todas',k===0);}});
   /* ClickLab: as duas janelas rolam juntas e os botões levam ao ponto da página */
@@ -330,6 +330,45 @@
   })();
   /* janelas embutidas: só carregam quando a tela aparece */
   ['s-inst','s-click'].forEach(k=>{aoEntrar[k]=t=>$$('iframe[data-src]',t).forEach(f=>{if(!f.getAttribute('src'))f.src=f.dataset.src;});});
+
+  /* ---------------------------------------------------------- cubagem: veículo + peça */
+  (function(){
+    const t=$('.s-cub2');if(!t)return;
+    const D=JSON.parse($('#cubDados').textContent);let v='carreta',c='BL01';
+    const fm=x=>new Intl.NumberFormat('pt-BR').format(x);
+    const bV=$$('#cubV button'),bC=$$('#cubC button'),mv=$('#cubMv');
+    function mostra(){
+      if(c==='MIX')v='carreta';
+      bV.forEach(b=>b.classList.toggle('on',b.dataset.v===v));bC.forEach(b=>b.classList.toggle('on',b.dataset.c===c));
+      const k=v+'/'+c,x=D.c[k],e=D.e[c],V=D.v[v],vazio=$('#cubVazio');
+      const tem=x&&x.n>0;
+      const src='assets/cad/'+(tem?v+'-'+c:v)+'.glb';
+      if(mv.dataset.atual!==src){mv.dataset.atual=src;mv.setAttribute('src',src);}
+      vazio.classList.toggle('on',!tem);vazio.textContent=tem?'':'Não cabe: a maior embalagem deste kit é maior que o baú da '+V.nome.toLowerCase();
+      $('#cubPlanoImg').src=tem?'assets/cad/plano-'+v+'-'+c+'.svg':'assets/cad/plano-'+v+'.svg';
+      $('#cubPlano').dataset.amplia=$('#cubPlanoImg').src;$('#cubPlano').dataset.legenda='Plano de carga · '+V.nome+' · '+D.nc[c];
+      $('#cubN').textContent=tem?fm(x.n):'0';
+      const lim=x&&x.lim==='peso'?'o peso':'a cubagem';
+      if(c==='MIX'){
+        $('#cubNl').textContent='kits de 7 peças, para a região SP Capital';
+        $('#cubKp').innerHTML='<div><b>'+x.via+'</b><span>carretas para a região</span></div><div><b>'+fm(x.cx)+'</b><span>volumes</span></div><div><b>'+e.m3.toString().replace('.',',')+' m³</b><span>de carga</span></div><div><b>'+(x.kg/1000).toFixed(1).replace('.',',')+' t</b><span>somando tudo</span></div>';
+        $('#cubEmbT').textContent='O que vai na carga · kits e volumes';
+        $('#cubEmb').innerHTML='<table>'+e.reg.map(r=>'<tr><td>'+r[1]+'</td><td style="font-family:var(--corpo)">'+r[0]+'</td></tr>').join('')+'</table><p class="tot">O 3D mostra a 1ª carreta, com '+x.ocups[0]+'% do baú ocupado.</p>';
+      }else{
+        $('#cubNl').textContent=tem?'kits por viagem na '+V.nome.toLowerCase():'não cabe neste veículo';
+        $('#cubKp').innerHTML=tem?('<div><b>'+x.ocup+'%</b><span>do baú ocupado; quem limita é '+lim+'</span></div><div><b>'+(x.kg/1000).toFixed(1).replace('.',',')+' t</b><span>de '+V.kg+' kg de carga útil</span></div><div><b>'+fm(x.cx)+'</b><span>volumes no baú</span></div><div><b>'+(x.tir?x.via:'·')+'</b><span>'+(x.tir?'viagens para '+fm(x.tir)+' kits':'tiragem a definir')+'</span></div>'):'<div><b>'+V.m3+' m³</b><span>baú de '+V.med+'</span></div>';
+        $('#cubEmbT').textContent='Embalagem de um kit · mm';
+        $('#cubEmb').innerHTML='<table>'+e.vols.map((r,i)=>'<tr><td>'+(i+1)+'</td><td>'+r.join(' × ')+'</td></tr>').join('')+'</table><p class="tot">'+e.vols.length+' volume'+(e.vols.length>1?'s':'')+', '+e.m3+' m³ e '+fm(e.kg)+' kg por kit</p>';
+      }
+      $('#cubArq').innerHTML=tem?('<a href="assets/cad/'+v+'-'+c+'.step" download data-cursor="Baixar">Baixar STEP</a><a href="assets/cad/'+v+'-'+c+'.dxf" download data-cursor="Baixar">Baixar DXF 3D</a>'):'';
+    }
+    bV.forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();v=b.dataset.v;if(c==='MIX')c='BL01';mostra();}));
+    bC.forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();c=b.dataset.c;mostra();}));
+    aoEntrar['s-cub2']=()=>{carregaMV();mostra();};
+    roteiro('s-cub2',{itens:()=>[...bC,...bV.slice(1)],ms:()=>7000});
+    mostra();
+    function carregaMV(){if(!document.querySelector('script[src*="model-viewer"]')){const sc=document.createElement('script');sc.type='module';sc.src='assets/vendor/model-viewer.min.js';document.head.appendChild(sc);}}
+  })();
 
   /* ---------------------------------------------------------- início */
   const h=parseInt(location.hash.slice(1),10);
