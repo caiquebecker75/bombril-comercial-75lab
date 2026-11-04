@@ -102,7 +102,7 @@
     else if(e.key==='Home')ir(0);else if(e.key==='End')ir(total-1);
     else if(e.key==='m'||e.key==='M')sum.classList.contains('aberto')?fecharSum():abrirSum();
   });
-  const INTERATIVO='a,button,input,.amplia,[data-cursor],#gantt,#sumario,.ct,model-viewer,.celular,.janela,.tela-s,.janela-c,.dentro li,.trilha-cap span';
+  const INTERATIVO='.rola,a,button,input,.amplia,[data-cursor],#gantt,#sumario,.ct,model-viewer,.celular,.janela,.tela-s,.janela-c,.dentro li,.trilha-cap span';
   $('#wrap').addEventListener('click',e=>{
     if(e.target.closest(INTERATIVO))return;
     if(sum.classList.contains('aberto'))return;
@@ -143,6 +143,7 @@
 
   /* ---------------------------------------------------------- 07 quatro frentes */
   (function(){
+    if(!$('#freDados'))return;
     const dados=$('#freDados').content.querySelectorAll('i');
     $$('.s-fre .frente').forEach(b=>b.addEventListener('click',e=>{
       e.stopPropagation();const i=+b.dataset.f,d=dados[i];
@@ -163,7 +164,7 @@
 
   /* ---------------------------------------------------------- depoimento Alltak */
   (function(){
-    const v=$('#vidDep'),cel=v.closest('.celular'),pr=$('#progDep');
+    const v=$('#vidDep');if(!v)return;const cel=v.closest('.celular'),pr=$('#progDep');
     const alterna=e=>{e.stopPropagation();if(v.paused){v.play();}else{v.pause();}};
     $('#playDep').addEventListener('click',alterna);
     v.addEventListener('click',alterna);
@@ -301,9 +302,19 @@
     const mostra=k=>{bts.forEach((b,j)=>b.classList.toggle('on',j===k));pns.forEach((p,j)=>p.classList.toggle('on',j===k));if(cfg.aoMudar)cfg.aoMudar(k,t);};
     bts.forEach((b,k)=>b.addEventListener('click',e=>{e.stopPropagation();mostra(k);}));
     mostra(0);
-    roteiro(cls,{itens:()=>bts,texto:k=>pns[k].textContent,extra:cfg.extra||1000});
+    roteiro(cls,{itens:()=>bts,texto:k=>pns[k]?pns[k].textContent:'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',extra:cfg.extra||1000});
   }
-  abas('s-design');abas('s-port',{extra:3000});abas('s-cota');abas('s-lead');
+  abas('s-design');abas('s-cota');abas('s-lead');abas('s-fol');abas('s-cub');abas('s-mont');
+  ['s-p0','s-p1','s-p2','s-p3'].forEach(c=>abas(c,{extra:4000}));
+  abas('s-mapa',{extra:2500,aoMudar:(k,t)=>$$('.palco-m [data-zona]',t).forEach(z=>z.classList.toggle('on',k===0?z.classList.contains('spr'):+z.dataset.zona===k-1))||$('.palco-m',t).classList.toggle('quente',k>0)});
+  /* ClickLab: as duas janelas rolam juntas e os botões levam ao ponto da página */
+  (function(){
+    const t=$('.s-click2');if(!t)return;const rs=$$('[data-sync]',t);let trava=false;
+    const ir=(k)=>rs.forEach(r=>{const im=r.querySelector('img');const esc=im.clientWidth/1280;r.scrollTop=k?Math.round(1240*esc):0;});
+    rs.forEach(r=>{r.addEventListener('scroll',()=>{if(trava)return;trava=true;rs.forEach(o=>{if(o!==r)o.scrollTop=r.scrollTop;});requestAnimationFrame(()=>trava=false);},{passive:true});r.addEventListener('wheel',e=>e.stopPropagation(),{passive:true});});
+    abas('s-click2',{extra:6000,aoMudar:(k)=>ir(k)});
+    aoEntrar['s-click2']=()=>{$$('img',t).forEach(i=>i.decode&&i.decode().catch(()=>{}));setTimeout(()=>ir(0),60);};
+  })();
   abas('s-zonas',{aoMudar:(k,t)=>$$('.planta [data-z]',t).forEach(z=>z.classList.toggle('on',+z.dataset.z===k))});
   /* loja perfeita: cada critério soma na nota */
   (function(){
