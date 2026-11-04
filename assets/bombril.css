@@ -614,4 +614,21 @@ a.sis:hover{background:var(--lime);color:var(--ink)}
 .s-proc .nota-p{transform:translateY(-150px)}
 .pdf .s-proc .nota-p{transform:translateY(-150px)!important}
 
-.palco-m.quente .spr.on{filter:drop-shadow(0 0 14px rgba(232,65,44,.9)) drop-shadow(0 0 30px rgba(232,65,44,.55))}
+
+/* mapa: só a indicação do lugar de cada peça */
+.palco-m .areas{position:absolute;inset:0;width:100%;height:100%;z-index:2}
+.palco-m .areas polygon{fill:var(--teal);fill-opacity:.08;stroke:var(--teal);stroke-opacity:.25;stroke-width:1.5;transition:fill-opacity .3s,stroke-opacity .3s}
+.palco-m .areas polygon.on{fill:#E8412C;fill-opacity:.42;stroke:#E8412C;stroke-opacity:1;stroke-width:2.5}
+.palco-m.todas .areas polygon.on{fill:var(--teal);fill-opacity:.5;stroke:var(--teal)}
+.palco-m .pin{position:absolute;transform:translate(-11px,-50%);display:flex;align-items:center;gap:0;background:none;padding:0;opacity:.35;transition:opacity .3s;z-index:5;pointer-events:none;color:var(--ink);font-family:var(--mono)}
+.palco-m .pin.on{opacity:1}
+.palco-m .pin i{width:22px;height:22px;background:var(--ink);color:var(--lime);font-style:normal;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none}
+.palco-m .pin b{display:none;background:var(--ink);color:#fff;font-size:10px;font-weight:700;padding:0 7px 0 2px;height:22px;line-height:22px;white-space:nowrap}
+.palco-m:not(.todas) .pin.on{z-index:6}
+.palco-m:not(.todas) .pin.on b{display:block}
+.leg-m{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:3px 8px;margin-top:auto;border-top:2px solid var(--linha-c);padding-top:7px}
+.leg-m li{display:flex;gap:5px;align-items:center;font-size:11px;line-height:1.1;opacity:.35;transition:opacity .25s}
+.leg-m li.on{opacity:1;font-weight:600}
+.leg-m i{width:17px;height:17px;background:var(--ink);color:var(--lime);font-style:normal;font-family:var(--mono);font-size:9.5px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none}
+.lado-m .paineis{flex:none}
+.lado-m .abas-b>button{padding:6px 10px}
