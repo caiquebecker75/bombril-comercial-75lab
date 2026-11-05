@@ -306,7 +306,7 @@
   }
   abas('s-design');abas('s-cota');abas('s-lead');abas('s-fol');abas('s-mont');
   ['s-p0','s-p1','s-p2','s-p3','s-p4','s-p5','s-p6'].forEach(c=>abas(c,{extra:4000}));
-  abas('s-core',{extra:2500});const p2=(k,t)=>$$('[data-p2]',t).forEach(p=>p.classList.toggle('on',+p.dataset.p2===k));abas('s-cen',{extra:2500,aoMudar:p2});abas('s-can',{extra:5000,aoMudar:p2});
+  abas('s-core',{extra:2500});const p2=(k,t)=>$$('[data-p2]',t).forEach(p=>p.classList.toggle('on',+p.dataset.p2===k));abas('s-cen',{extra:2500,aoMudar:p2});abas('s-can',{extra:5000,aoMudar:p2});abas('s-pol',{extra:3000});
   abas('s-cex',{aoMudar:(k,t)=>$$('.pin13',t).forEach((p,j)=>p.classList.toggle('on',j===k))});
   abas('s-13',{aoMudar:(k,t)=>$$('.pin13',t).forEach((p,j)=>p.classList.toggle('on',j===k))});
   abas('s-mapa',{extra:2500,aoMudar:(k,t)=>{$$('[data-zona]',t).forEach(z=>z.classList.toggle('on',k===0||+z.dataset.zona===k-1));$('.palco-m',t).classList.toggle('todas',k===0);}});

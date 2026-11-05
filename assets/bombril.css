@@ -785,3 +785,23 @@ a.sis:hover{background:var(--lime);color:var(--ink)}
 .lado-arc .pe-ar{margin-top:auto;border:2px solid var(--linha-e)}
 .lado-arc .pe-ar img{width:96px;height:96px}
 .pdf .txt-can a,.pdf .todo-gif{display:none}
+
+/* Displays de polionda */
+.top-pol{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:18px}
+.top-pol h2{font-size:48px;line-height:1}
+.top-pol .abas-b{flex-wrap:nowrap;gap:6px}
+.top-pol .abas-b>button{display:flex;align-items:center;gap:8px;padding:5px 12px 5px 5px;text-transform:none;letter-spacing:0;font-family:var(--corpo);font-size:13px;font-weight:600;white-space:nowrap}
+.top-pol .abas-b img{width:40px;height:40px;object-fit:cover;object-position:top;background:#d8d9db;flex:none}
+.s-pol .paineis{flex:1;min-height:0;position:relative}
+.s-pol [data-painel].on{position:absolute;inset:0}
+.gr-pol{height:100%;display:grid;grid-template-columns:1.15fr .62fr 1fr;gap:12px}
+.gr-pol figure{margin:0;background:#d8d9db;position:relative;overflow:hidden;min-height:0}
+.gr-pol img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.gr-pol figcaption{position:absolute;left:0;bottom:0;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.06em;background:var(--ink);color:#fff;padding:4px 7px}
+.pol-b{display:grid;grid-template-rows:1fr 1fr;gap:12px;min-height:0}
+.txt-pol{display:flex;flex-direction:column;gap:12px;padding-left:12px}
+.txt-pol .cod{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.06em}
+.txt-pol h3{font-size:32px;line-height:1.05}
+.txt-pol p{font-size:17px;line-height:1.4}
+.txt-pol dl{display:grid;grid-template-columns:auto 1fr;gap:7px 16px;margin-top:auto;font-size:14px;border-top:1px solid var(--linha-c,rgba(0,0,0,.15));padding-top:12px}
+.txt-pol dt{font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;opacity:.6;padding-top:2px}
