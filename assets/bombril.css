@@ -1289,3 +1289,85 @@ a.sis:hover{background:var(--lime);color:var(--ink)}
 .fp li{font-size:15px;padding-left:18px;position:relative}.fp li::before{content:"";position:absolute;left:0;top:.45em;width:8px;height:8px;background:var(--lime)}
 .fp em{position:absolute;top:-14px;right:16px;font-style:normal;background:var(--lime);color:var(--ink);font-family:var(--mono);font-size:11px;text-transform:uppercase;padding:4px 10px}
 .tela.ativa .fp{animation:rcEntra .7s cubic-bezier(.2,.8,.2,1.15) both;animation-delay:calc(.3s + var(--i) * .15s)}
+
+/* ===== PDV leve: capa */
+.s-lvc{background:#000}
+.lvc-fundo{position:absolute;inset:0;display:grid;grid-template-columns:repeat(7,1fr);overflow:hidden}
+.lvc-fundo img{width:100%;height:100%;object-fit:cover;filter:brightness(.55)}
+.tela.ativa .lvc-fundo img{animation:lvcSobe 1.2s cubic-bezier(.2,.8,.2,1) both,cineKen 12s ease-in-out infinite alternate;animation-delay:calc(var(--i) * .1s),calc(1.2s + var(--i) * .3s)}
+@keyframes lvcSobe{from{opacity:0;transform:translateY(12%)}}
+.lvc-veu{position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.88) 0,rgba(0,0,0,.6) 55%,rgba(0,0,0,.2))}
+.lvc-txt{position:absolute;left:150px;top:50%;transform:translateY(-50%);color:#fff;max-width:900px}
+.lvc-txt h2{font-size:96px;line-height:.92;margin:14px 0 40px}
+.lvc-num{display:flex;gap:44px}
+.lvc-num div{display:flex;flex-direction:column}
+.lvc-num b{font-family:var(--titulo);font-weight:900;font-size:68px;line-height:1;color:var(--lime)}
+.lvc-num span{font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.06em;opacity:.75}
+
+/* ===== PDV leve: uma tela por marca */
+.gr-lv{height:100%;display:grid;grid-template-columns:1.55fr 1fr;gap:26px}
+.lv-vistas{position:relative;overflow:hidden;background:#111}
+.lv-vistas img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0}
+.lv-vistas img[style*="--v:0"]{opacity:1}
+.lv-vistas em{position:absolute;left:14px;bottom:14px;font-style:normal;font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.06em;background:var(--f);color:var(--t);padding:5px 9px;opacity:0}
+.lv-vistas em[style*="--v:0"]{opacity:1}
+.tela.ativa .lv-vistas img,.tela.ativa .lv-vistas em{animation:lvVista 15s linear infinite;animation-delay:calc(var(--v) * 5s - 1s)}
+.tela.ativa .lv-vistas img[style*="--v:0"],.tela.ativa .lv-vistas em[style*="--v:0"]{animation-delay:-1s}
+@keyframes lvVista{0%{opacity:0;transform:scale(1.04)}6%,33%{opacity:1}39%,100%{opacity:0;transform:scale(1)}}
+.lv-lado{display:flex;flex-direction:column;gap:12px;min-height:0}
+.lv-lado h2{font-size:46px;line-height:.95}
+.lv-lado h2::after{content:"";display:block;width:90px;height:8px;margin-top:12px;background:linear-gradient(90deg,var(--f) 50%,var(--d) 50%)}
+.lv-chips{display:flex;flex-wrap:wrap;gap:6px}
+.lv-chips span{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em;border:1px solid rgba(255,255,255,.35);padding:4px 8px}
+.lv-grade{flex:1;min-height:0;display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:1fr;gap:8px}
+.lv-card span{font-size:13px!important;padding:5px 8px!important}
+.lv-card{background:#e9e9e6}
+.lv-ar{display:grid;grid-template-columns:86px 1fr;gap:14px;align-items:center;background:var(--lime);color:var(--ink);padding:10px;text-decoration:none}
+.lv-ar img{width:86px;height:86px;background:#fff;padding:4px}
+.lv-ar b{display:block;font-family:var(--titulo);font-weight:900;text-transform:uppercase;font-size:24px;line-height:1}
+.lv-ar span{font-size:13.5px;line-height:1.3}
+.tela.ativa .lv-ar{animation:icPulsa 2.2s ease-in-out 2s infinite}
+.vit-pag.leve .vp-imgs{grid-template-columns:.85fr 30px 1.3fr}
+.vit-pag.leve .vp-hoje{background:#d8d9db!important}
+.vit-pag.leve .vp-hoje img{padding:0}
+.lv-ar-mini{display:grid;grid-template-columns:70px 1fr;gap:10px;align-items:center;margin-top:auto;border:2px solid var(--ink);padding:8px;text-decoration:none;color:var(--ink);font-size:13px;font-weight:600}
+.lv-ar-mini img{width:70px;height:70px}
+
+/* ===== Executivo do PDV leve */
+.s-lx .caixa{display:flex;flex-direction:column;gap:16px}
+.lx-topo{display:flex;justify-content:space-between;align-items:flex-end;gap:20px}
+.lx-topo h2{font-size:50px;max-width:760px}
+.lx-num{display:flex;gap:26px}
+.lx-num div{display:flex;flex-direction:column}
+.lx-num b{font-family:var(--titulo);font-weight:900;font-size:50px;line-height:1;color:var(--teal)}
+.lx-num span{font-family:var(--mono);font-size:10px;text-transform:uppercase;opacity:.65}
+.lx-grade{flex:1;min-height:0;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:1fr 1fr;gap:10px}
+.lx-f{margin:0;position:relative;background:#fff;border:1px solid #ccc;overflow:hidden}
+.lx-f img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;transition:transform .4s}
+.lx-f:hover img{transform:scale(1.08)}
+.lx-f figcaption{position:absolute;left:0;bottom:0;background:var(--ink);color:#fff;font-family:var(--mono);font-size:10px;text-transform:uppercase;padding:4px 8px}
+.tela.ativa .lx-f{animation:rcEntra .6s ease both;animation-delay:calc(.3s + var(--i) * .08s)}
+
+/* ===== Aproveitamento de chapa */
+.gr-lch{height:100%;display:grid;grid-template-columns:1fr 1fr;gap:40px}
+.gr-lch>div{display:flex;flex-direction:column;gap:18px;min-height:0}
+.gr-lch h2{font-size:56px}
+.lch-dest{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.lch-dest div{border:2px solid var(--lime);padding:14px;display:flex;flex-direction:column;gap:4px}
+.lch-dest b{font-family:var(--titulo);font-weight:900;font-size:40px;line-height:1;color:var(--lime)}
+.lch-dest span{font-size:13px;opacity:.75;line-height:1.25}
+.lch-nest{flex:1;min-height:0;margin:0;position:relative;background:#fff}
+.lch-nest img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.lch-bar{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;justify-content:center;gap:16px}
+.lch-bar li{display:grid;grid-template-columns:190px 1fr 70px;grid-template-rows:auto auto;gap:2px 14px;align-items:center}
+.lch-bar span{font-size:16px;font-weight:600}
+.lch-bar i{height:20px;background:rgba(255,255,255,.08);position:relative}
+.lch-bar i::after{content:"";position:absolute;left:0;top:0;bottom:0;width:var(--w);background:var(--lime)}
+.tela.ativa .lch-bar i::after{animation:prEnche 1.4s cubic-bezier(.3,.8,.2,1) both;animation-delay:calc(.4s + var(--i) * .1s)}
+.lch-bar b{font-family:var(--titulo);font-weight:900;font-size:26px;text-align:right}
+.lch-bar em{grid-column:2;font-style:normal;font-family:var(--mono);font-size:10px;opacity:.55;text-transform:uppercase}
+.lv-vistas{aspect-ratio:16/9;align-self:center}
+.tela.ativa .lv-ar{animation:lvPulsa 2.4s ease-in-out 2s infinite}
+@keyframes lvPulsa{50%{transform:scale(1.03)}}
+.vit-pag{color:var(--ink)}.vit-pag .vp-topo h3,.vit-pag .vp-ficha dd{color:var(--ink)}
+.vit-pag.leve .vp-imgs{grid-template-columns:1fr}
