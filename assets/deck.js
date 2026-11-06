@@ -248,6 +248,7 @@
     }
     aoEntrar['s-cases']=ligaModelos;
     aoEntrar['s-arb']=ligaModelos;
+    aoEntrar['s-art']=ligaModelos;
   })();
 
   /* ---------------------------------------------------------- painel do QR */
