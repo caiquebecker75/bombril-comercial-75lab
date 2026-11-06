@@ -45,7 +45,7 @@
     stage.className='t-'+({claro:'claro',claro2:'claro',escuro:'escuro',lime:'lime',foto:'foto'}[t.dataset.tema]||'escuro')+(n===0?' capa':'');
     capTxt.textContent=t.dataset.cap||'';
     prog.style.width=((n+1)/total*100)+'%';
-    cont.textContent=dd(n+1)+' / '+dd(total);
+    cont.textContent=dd(n+1);
     $('#ant').disabled=n===0;$('#prox').disabled=n===total-1;
     t.querySelectorAll('[data-conta]').forEach(contar);
     $$('#sumLista button').forEach(b=>b.classList.toggle('atual',+b.dataset.i===n));
@@ -330,6 +330,18 @@
     roteiro(t.classList[1],{itens:()=>[grade,...cards],semAuto:true});
   });
   abas('s-cn',{extra:2500,aoMudar:(k,t)=>{const L='AHSPC'[k];$$('.cn-p',t).forEach(f=>{const d=f.dataset.canais.includes(L);f.classList.toggle('dentro',d);f.classList.toggle('fora',!d);});$$('[data-painel].on [data-conta]',t).forEach(contar);}});
+
+  /* simulador de investimento: escala P, M ou G carrega as quantidades; cada peça ajusta à mão (06/11) */
+  $$('.s-sm').forEach(t=>{
+    const L=$$('.sm-l',t),nf=new Intl.NumberFormat('pt-BR',{maximumFractionDigits:0}),fmt=v=>'R$ '+nf.format(v);
+    const soma=()=>{let tot=0,n=0;L.forEach(l=>{const q=Math.max(0,+$('input',l).value||0),s=q*+l.dataset.pu;$('.sm-sub',l).textContent=q?fmt(s):'fora';l.classList.toggle('zero',!q);tot+=s;n+=q;});$('#smTotal',t).textContent=fmt(tot);$('#smPecas',t).textContent=nf.format(n);};
+    L.forEach(l=>{const i=$('input',l);
+      $('.sm-menos',l).addEventListener('click',e=>{e.stopPropagation();i.value=Math.max(0,(+i.value||0)-5);soma();});
+      $('.sm-mais',l).addEventListener('click',e=>{e.stopPropagation();i.value=(+i.value||0)+5;soma();});
+      i.addEventListener('input',soma);['click','keydown','pointerdown'].forEach(ev=>i.addEventListener(ev,e=>e.stopPropagation()));});
+    abas('s-sm',{extra:3000,aoMudar:k=>{const e='pmg'[k];L.forEach(l=>{$('input',l).value=l.dataset[e];});soma();}});
+    const bm=$('[data-esc="M"]',t);if(bm)bm.click();
+  });
   /* ClickLab: as duas janelas rolam juntas e os botões levam ao ponto da página */
   (function(){
     const t=$('.s-click2');if(!t)return;const rs=$$('[data-sync]',t);let trava=false;
