@@ -1427,3 +1427,5 @@ a.sis:hover{background:var(--lime);color:var(--ink)}
 .s-asp2 .asp-l{max-width:none}
 .s-asp2 .asps{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
 .s-asp2 h2{font-size:64px;max-width:1200px}
+.cn-p.lev{background:#ecebe6}
+.cn-p.lev figcaption{background:#2a2f2c}
