@@ -1413,3 +1413,17 @@ a.sis:hover{background:var(--lime);color:var(--ink)}
 .tela.ativa.s-kv2 img.sangra{animation:cinePeca 1.6s cubic-bezier(.2,.7,.2,1) both}
 .kv2-tag{position:absolute;left:44px;bottom:40px;z-index:3;background:rgba(0,0,0,.7);color:#fff;padding:10px 16px;font-family:var(--titulo);font-weight:900;text-transform:uppercase;font-size:26px;backdrop-filter:blur(6px)}
 .kv2-tag em{display:block;font-style:normal;font-family:var(--mono);font-weight:400;font-size:10px;letter-spacing:.1em;color:var(--lime)}
+
+/* vitrine com peças pesadas e leves na mesma grade (06/11) */
+.vit-grade[class*=" g"]{grid-template-columns:repeat(4,1fr)}
+.vit-grade.g5,.vit-grade.g6,.vit-grade.g7,.vit-grade.g8,.vit-grade.g9,.vit-grade.g10{grid-template-columns:repeat(5,1fr)}
+.vit-grade.g11,.vit-grade.g12,.vit-grade.g13,.vit-grade.g14,.vit-grade.g15,.vit-grade.g16,.vit-grade.g17,.vit-grade.g18{grid-template-columns:repeat(6,1fr)}
+.vit-grade.g19,.vit-grade.g20,.vit-grade.g21,.vit-grade.g22,.vit-grade.g23,.vit-grade.g24,.vit-grade.g25,.vit-grade.g26,.vit-grade.g27,.vit-grade.g28{grid-template-columns:repeat(7,1fr)}
+.vit-card.lev{background:#ecebe6}
+.vit-card.lev span{background:#2a2f2c;font-size:15px}
+.vit-card.lev em{color:#9fe0d2}
+.vit-grade.g19 .vit-card span,.vit-grade.g20 .vit-card span,.vit-grade.g21 .vit-card span,.vit-grade.g22 .vit-card span,.vit-grade.g23 .vit-card span,.vit-grade.g24 .vit-card span,.vit-grade.g25 .vit-card span,.vit-grade.g26 .vit-card span{font-size:13px;padding:5px 8px}
+.s-asp2 .caixa{display:flex!important;flex-direction:column;justify-content:center;gap:40px}
+.s-asp2 .asp-l{max-width:none}
+.s-asp2 .asps{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.s-asp2 h2{font-size:64px;max-width:1200px}
