@@ -819,7 +819,7 @@ a.sis:hover{background:var(--lime);color:var(--ink)}
 .cm-logo{width:260px;max-height:230px;object-fit:contain;filter:drop-shadow(0 18px 30px rgba(0,0,0,.28));animation:cmFlutua 4s ease-in-out infinite}
 @keyframes cmFlutua{50%{transform:translateY(-10px) rotate(-2deg)}}
 .cm-txt h2{font-size:64px;line-height:.95;color:var(--t)}
-.cm-n{font-family:var(--display,inherit);font-size:30px;text-transform:uppercase;letter-spacing:.02em;background:var(--t);color:var(--f);padding:8px 16px}
+.cm-n{font-family:var(--titulo);font-size:30px;text-transform:uppercase;letter-spacing:.02em;background:var(--t);color:var(--f);padding:8px 16px}
 .cm-n span{font-size:30px}
 .cm-kv{margin:0;width:100%;aspect-ratio:16/9;max-height:100%;position:relative;background:rgba(0,0,0,.14);box-shadow:0 30px 60px rgba(0,0,0,.25);transform:rotate(1.5deg)}
 .cm-kv img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
@@ -889,3 +889,24 @@ a.sis:hover{background:var(--lime);color:var(--ink)}
 .mont-cex figcaption{position:absolute;left:0;top:0;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.06em;background:var(--teal);color:#fff;padding:5px 8px}
 .s-cex .lista-13{grid-template-columns:1fr}.s-cex .lista-13 button{padding:4px 6px}
 .s-cex .gr-cex{align-items:center}.s-cex .mont-cex,.s-cex .foto-cex{align-self:center!important}
+
+/* ===== Do dado à solução, enxuto (05/11, noite): 6 cartões, dado grande -> resposta com a peça */
+.s-rac2 .caixa{display:flex;flex-direction:column;gap:22px}
+.s-rac2 h2{font-size:58px}
+.gr-rc{flex:1;min-height:0;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:1fr 1fr;gap:14px}
+.rc{position:relative;overflow:hidden;background:#fff;border:2px solid var(--ink);display:grid;grid-template-columns:1fr 150px;grid-template-rows:1fr auto}
+.rc-dado{padding:16px 0 0 18px;display:flex;flex-direction:column;gap:6px}
+.rc-dado b{font-family:var(--titulo);font-size:62px;line-height:.9;color:var(--ink);letter-spacing:-.01em}
+.rc-dado span{font-size:15px;line-height:1.25;opacity:.7;max-width:230px}
+.rc img{grid-row:1/3;grid-column:2;width:100%;height:100%;object-fit:cover;object-position:center 30%;background:#d8d9db}
+.rc-sol{grid-column:1;display:flex;align-items:center;gap:10px;background:var(--teal);color:#fff;padding:12px 16px}
+.rc-sol p{font-size:17px;font-weight:700;line-height:1.15;margin:0}
+.rc-sol i{flex:none;width:26px;height:16px;background:#fff;clip-path:polygon(0 35%,60% 35%,60% 0,100% 50%,60% 100%,60% 65%,0 65%)}
+.tela.ativa .rc{animation:rcEntra .7s cubic-bezier(.2,.8,.2,1.15) both;animation-delay:calc(.25s + var(--i) * .12s)}
+@keyframes rcEntra{from{opacity:0;transform:translateY(40px) scale(.92)}}
+.tela.ativa .rc-sol{animation:rcSol .6s ease both;animation-delay:calc(.75s + var(--i) * .12s)}
+@keyframes rcSol{from{transform:translateX(-102%)}}
+.tela.ativa .rc img{animation:rcFoto .8s ease both;animation-delay:calc(.6s + var(--i) * .12s)}
+@keyframes rcFoto{from{opacity:0;transform:scale(1.15)}}
+.rc:hover img{transform:scale(1.06);transition:transform .4s}
+.rc-dado b{font-weight:900;text-transform:uppercase;font-size:76px}.cm-n{font-family:var(--titulo);font-weight:900}
