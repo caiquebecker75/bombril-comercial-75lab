@@ -910,3 +910,149 @@ a.sis:hover{background:var(--lime);color:var(--ink)}
 @keyframes rcFoto{from{opacity:0;transform:scale(1.15)}}
 .rc:hover img{transform:scale(1.06);transition:transform .4s}
 .rc-dado b{font-weight:900;text-transform:uppercase;font-size:76px}.cm-n{font-family:var(--titulo);font-weight:900}
+
+/* ===== Conteúdo de todos os slides menor e centralizado (05/11, noite) */
+.n .caixa{transform:scale(.9);transform-origin:50% 50%}
+
+/* ===== Ícones animados: o traço se desenha ao entrar e fica um movimento leve em laço */
+.ic{width:100%;height:100%;overflow:visible}
+.ic path,.ic rect,.ic circle{stroke-dasharray:240;stroke-dashoffset:0}
+.ic *{transform-box:fill-box}
+.tela.ativa .ic path,.tela.ativa .ic rect,.tela.ativa .ic circle{animation:icDesenha 1.3s cubic-bezier(.6,0,.2,1) both;animation-delay:var(--d0,.4s)}
+@keyframes icDesenha{from{stroke-dashoffset:240}}
+.tela.ativa .ic .m-sobe{transform-origin:50% 100%;animation:icDesenha 1.3s both var(--d0,.4s),icSobe 2.4s ease-in-out 1.8s infinite}
+.tela.ativa .ic .m-sobe2{transform-origin:50% 100%;animation:icDesenha 1.3s both var(--d0,.4s),icSobe 2.4s ease-in-out 3s infinite}
+@keyframes icSobe{50%{transform:scaleY(.6)}}
+.tela.ativa .ic .m-pisca{transform-origin:50% 50%;animation:icDesenha 1.3s both var(--d0,.4s),icPisca 3s ease-in-out 1.8s infinite}
+@keyframes icPisca{45%,55%{transform:scale(1,.15)}}
+.tela.ativa .ic .m-bate{animation:icDesenha 1.3s both var(--d0,.4s),icRedesenha 3s ease-in-out 2s infinite}
+@keyframes icRedesenha{0%,10%{stroke-dashoffset:240}45%,100%{stroke-dashoffset:0}}
+.tela.ativa .ic .m-pino{animation:icDesenha 1.3s both var(--d0,.4s),icPula 1.4s ease-in-out 1.8s infinite}
+@keyframes icPula{50%{transform:translateY(-6px)}}
+.ic .m-gira{transform-box:view-box;transform-origin:32px 32px}
+.tela.ativa .ic .m-gira{animation:icGira 6s linear 1.6s infinite}
+@keyframes icGira{to{transform:rotate(360deg)}}
+.tela.ativa .ic .m-scan{animation:icDesenha 1.3s both var(--d0,.4s),icScan 2s ease-in-out 1.8s infinite}
+@keyframes icScan{0%,100%{transform:translateY(-22px)}50%{transform:translateY(22px)}}
+.ic .m-anda{transform-box:view-box}
+.tela.ativa .ic .m-anda{animation:icAnda 2.2s ease-in-out 1.6s infinite}
+@keyframes icAnda{50%{transform:translateX(5px)}}
+.tela.ativa .ic .m-onda{animation:icDesenha 1.3s both var(--d0,.4s),icOnda 1.6s ease-in-out 1.8s infinite}
+@keyframes icOnda{50%{opacity:.15}}
+.tela.ativa .ic .m-vapor{animation:icDesenha 1.3s both var(--d0,.4s),icVapor 2s ease-in-out 1.8s infinite}
+@keyframes icVapor{0%{transform:translateY(0);opacity:1}100%{transform:translateY(-6px);opacity:0}}
+.tela.ativa .ic .m-pulsa{transform-origin:50% 50%;animation:icDesenha 1.3s both var(--d0,.4s),icPulsa 1.8s ease-in-out 1.8s infinite}
+@keyframes icPulsa{50%{transform:scale(1.12) rotate(8deg)}}
+
+/* slide 04 com ícone no lugar da foto */
+.rc{grid-template-columns:1fr 130px!important}
+.rc-ic{grid-row:1/3;grid-column:2;display:flex;align-items:center;justify-content:center;background:#e9f4f1;color:var(--teal);padding:26px}
+.rc-ic .ic{width:84px;height:84px}
+.rc{--d0:calc(.7s + var(--i) * .12s)}
+
+/* ===== Jornada: 7 paradas num caminho */
+.s-jor2 .caixa{display:flex;flex-direction:column;justify-content:center;gap:60px}
+.s-jor2 h2{font-size:66px;text-align:center}
+.jp-trilha{position:relative;display:grid;grid-template-columns:repeat(7,1fr);gap:12px}
+.jp-linha{position:absolute;left:7%;right:7%;top:70px;height:3px;background:repeating-linear-gradient(90deg,var(--lime) 0 14px,transparent 14px 26px);opacity:.55}
+.jp-bola{position:absolute;top:62px;left:7%;width:19px;height:19px;border-radius:50%;background:var(--lime);box-shadow:0 0 0 7px rgba(192,238,78,.2)}
+.tela.ativa .jp-bola{animation:jpAnda 9s ease-in-out 1.2s infinite}
+@keyframes jpAnda{0%{left:7%}100%{left:calc(93% - 19px)}}
+.jp{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;--d0:calc(.5s + var(--i) * .15s)}
+.jp-ic{width:140px;height:140px;border-radius:50%;background:#1b1f1d;border:2px solid var(--lime);color:var(--lime);padding:34px;box-sizing:border-box;position:relative;z-index:1}
+.jp b{font-family:var(--titulo);font-weight:900;text-transform:uppercase;font-size:28px;line-height:1;margin-top:8px}
+.jp span{font-size:17px;opacity:.75;line-height:1.25;max-width:170px}
+.tela.ativa .jp{animation:rcEntra .7s cubic-bezier(.2,.8,.2,1.15) both;animation-delay:calc(.3s + var(--i) * .15s)}
+
+/* ===== Estratégia, design e produção */
+.s-ep .caixa{display:flex;flex-direction:column;justify-content:center;gap:48px}
+.s-ep h2{font-size:70px;text-align:center}
+.ep-fila{display:flex;align-items:flex-start;justify-content:center;gap:20px}
+.ep{width:330px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;--d0:calc(.5s + var(--i) * .25s)}
+.ep-ic{width:170px;height:170px;border-radius:50%;border:2px solid var(--lime);color:var(--lime);padding:40px;box-sizing:border-box;background:#1b1f1d}
+.ep b{font-family:var(--titulo);font-weight:900;text-transform:uppercase;font-size:44px;line-height:1}
+.ep p{font-size:19px;opacity:.75;line-height:1.3;max-width:290px}
+.ep-mais{font-style:normal;font-family:var(--titulo);font-weight:900;font-size:70px;color:var(--lime);margin-top:44px}
+.tela.ativa .ep{animation:rcEntra .7s cubic-bezier(.2,.8,.2,1.15) both;animation-delay:calc(.3s + var(--i) * .25s)}
+.ep-faixa{display:flex;justify-content:center;align-items:center;gap:22px;background:var(--lime);color:var(--ink);padding:16px 26px;align-self:center}
+.ep-faixa span{font-family:var(--titulo);font-weight:900;text-transform:uppercase;font-size:28px}
+.ep-faixa i{width:10px;height:10px;border-radius:50%;background:var(--ink)}
+
+/* ===== Eficiência de custo */
+.gr-ef{height:100%;display:grid;grid-template-columns:.9fr 1.1fr;gap:50px;align-items:center}
+.ef-tit{display:flex;flex-direction:column;gap:22px}
+.ef-tit h2{font-size:66px;line-height:.98}
+.ef-num{display:flex;align-items:center;gap:18px;border-top:2px solid var(--ink);padding-top:18px}
+.ef-num b{font-family:var(--titulo);font-weight:900;font-size:110px;line-height:.85;color:var(--teal)}
+.ef-num>span{font-size:18px;max-width:260px;line-height:1.3}
+.ef-cards{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.ef{background:#fff;border:2px solid var(--ink);padding:22px;display:flex;flex-direction:column;gap:10px;--d0:calc(.6s + var(--i) * .15s)}
+.ef-ic{width:74px;height:74px;color:var(--teal)}
+.ef b{font-family:var(--titulo);font-weight:900;text-transform:uppercase;font-size:28px;line-height:1}
+.ef p{font-size:16px;line-height:1.3;opacity:.75}
+.tela.ativa .ef{animation:rcEntra .7s cubic-bezier(.2,.8,.2,1.15) both;animation-delay:calc(.3s + var(--i) * .15s)}
+
+/* ===== Capa de chamada para o AR */
+.s-arcta{background:#0c0f0e}
+.arc-luz{position:absolute;inset:0;background:radial-gradient(circle at 72% 50%,rgba(192,238,78,.35),transparent 42%),radial-gradient(circle at 20% 80%,rgba(46,160,140,.25),transparent 40%)}
+.tela.ativa .arc-luz{animation:arcLuz 5s ease-in-out infinite alternate}
+@keyframes arcLuz{to{opacity:.55;transform:scale(1.08)}}
+.caixa-arc{position:absolute;inset:92px 140px 66px;display:grid;grid-template-columns:1fr 420px;gap:60px;align-items:center}
+.arc-txt h2{font-size:84px;line-height:.95}
+.arc-txt p{font-size:22px;opacity:.8;margin-top:24px;max-width:560px;line-height:1.35}
+.arc-cel{display:flex;flex-direction:column;align-items:center;gap:22px;text-decoration:none;color:inherit}
+.arc-tela{position:relative;width:340px;height:560px;border:12px solid #222;border-radius:46px;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px #444,0 40px 90px rgba(0,0,0,.6),0 0 80px rgba(192,238,78,.35);overflow:hidden}
+.arc-tela img{width:240px;height:240px}
+.arc-scan{position:absolute;left:20px;right:20px;height:4px;background:var(--lime);box-shadow:0 0 18px var(--lime);top:30%}
+.tela.ativa .arc-scan{animation:arcScan 2.2s ease-in-out infinite}
+@keyframes arcScan{0%,100%{top:22%}50%{top:76%}}
+.tela.ativa .arc-tela{animation:arcFlutua 4s ease-in-out infinite}
+@keyframes arcFlutua{50%{transform:translateY(-12px) rotate(-1.5deg)}}
+.arc-dica{display:flex;align-items:center;gap:10px;font-family:var(--titulo);font-weight:900;text-transform:uppercase;font-size:26px;color:var(--lime)}
+.arc-dica .ic{width:38px;height:38px}
+.tela.ativa .arc-dica{animation:icPulsa 1.6s ease-in-out infinite}
+
+/* ===== Cases de PDV */
+.s-cp .caixa{display:flex;flex-direction:column;gap:20px}
+.gr-cp{flex:1;min-height:0;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:1fr 1fr;gap:12px}
+.cp{margin:0;position:relative;overflow:hidden;background:#ddd}
+.cp img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.cp:hover img{transform:scale(1.06)}
+.cp figcaption{position:absolute;left:0;bottom:0;background:var(--ink);color:#fff;padding:8px 12px;font-size:13px;display:flex;flex-direction:column}
+.cp figcaption b{font-family:var(--titulo);font-weight:900;text-transform:uppercase;font-size:22px;line-height:1}
+.tela.ativa .cp{animation:rcEntra .7s cubic-bezier(.2,.8,.2,1.15) both;animation-delay:calc(.3s + var(--i) * .1s)}
+
+/* ===== Transição de cinema: faixas pretas de tela larga */
+#cine{position:absolute;inset:0;z-index:70;pointer-events:none}
+#cine i{position:absolute;left:0;right:0;height:13%;background:#000;transform:scaleY(0)}
+#cine i:first-child{top:0;transform-origin:top}
+#cine i:last-child{bottom:0;transform-origin:bottom}
+.pdf #cine{display:none}
+
+/* ===== Abertura de cinema do Móvel Família */
+.s-cine{background:#000}
+.cine-fundo{position:absolute;inset:0;background:radial-gradient(ellipse at 66% 62%,rgba(255,212,0,.28),transparent 45%),#000}
+.cine-peca{position:absolute;right:120px;top:90px;bottom:80px;width:640px}
+.cine-peca img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 40px 60px rgba(0,0,0,.8))}
+.tela.ativa .cine-peca img{animation:cinePeca 2.6s cubic-bezier(.2,.7,.2,1) both,cineKen 14s ease-in-out 2.6s infinite alternate}
+@keyframes cinePeca{from{opacity:0;transform:scale(1.3) translateY(4%);filter:blur(18px) brightness(.1)}}
+@keyframes cineKen{to{transform:scale(1.06) translateX(-1.5%)}}
+.cine-luz{position:absolute;inset:0;overflow:hidden;mix-blend-mode:overlay;-webkit-mask:url(../assets/core/hero-alfa.webp) center/contain no-repeat;mask:url(../assets/core/hero-alfa.webp) center/contain no-repeat}
+.cine-luz::before{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.75) 50%,transparent 65%);transform:translateX(-120%)}
+.tela.ativa .cine-luz::before{animation:cineLuz 2.4s ease-in-out 1.8s both,cineLuz 2.6s ease-in-out 8s infinite}
+@keyframes cineLuz{from{transform:translateX(-120%)}to{transform:translateX(120%)}}
+.cine-txt{position:absolute;left:150px;top:50%;transform:translateY(-50%);max-width:720px;color:#fff}
+.cine-sobre{font-family:var(--mono);font-size:15px;text-transform:uppercase;letter-spacing:.3em;color:#FFD400;opacity:0}
+.tela.ativa .cine-sobre{animation:cineSobe 1s ease 1.2s both}
+.cine-nome{font-size:140px;line-height:.88;margin:14px 0 22px;display:flex;flex-direction:column;max-width:760px}
+.cine-pal{display:block;white-space:nowrap;font-weight:inherit}
+.cine-nome span{display:inline-block;opacity:0}
+.tela.ativa .cine-nome span{animation:cineLetra .9s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(1.4s + var(--l) * .06s)}
+@keyframes cineLetra{from{opacity:0;transform:translateY(60%) rotateX(80deg);filter:blur(8px)}to{opacity:1}}
+.cine-sub{font-size:24px;opacity:0;line-height:1.35;max-width:520px}
+.tela.ativa .cine-sub{animation:cineSobe 1.2s ease 2.5s both}
+@keyframes cineSobe{from{opacity:0;transform:translateY(20px)}to{opacity:.85}}
+.tela.ativa .cine-sobre{animation-name:cineSobe2}@keyframes cineSobe2{from{opacity:0;transform:translateY(20px)}to{opacity:1}}
+.cine-faixa{position:absolute;left:0;right:0;height:70px;background:#000;z-index:5}
+.cine-faixa.cima{top:0}.cine-faixa.baixo{bottom:0}
+.pdf .cine-sobre,.pdf .cine-nome span,.pdf .cine-sub{opacity:1!important}

@@ -58,15 +58,22 @@
     if(emTransicao){pendente=n;return;}
     if(n===atual)return;
     if(reduz||!wipe.animate){aplicar(n);return;}
-    const dir=n>atual?1:-1, paraLime=telas[n].dataset.tema==='lime';
-    wipe.classList.toggle('ink',paraLime);
-    wipe.querySelector('img').src=paraLime?'assets/75lab-lime.png':'assets/75lab-black.png';
-    const de=dir>0?'inset(0 0 0 100%)':'inset(0 100% 0 0)', meio='inset(0 0 0 0)', para=dir>0?'inset(0 100% 0 0)':'inset(0 0 0 100%)';
+    /* transição de cinema (05/11, noite): faixas pretas de tela larga fecham, a tela sai com zoom e desfoque
+       e a nova entra do escuro, se assentando. A dos capítulos e das capas de marca é mais lenta. */
+    const dir=n>atual?1:-1, velha=telas[atual], nova=telas[n];
+    const forte=/s-cap|s-cm|s-cine|s-arcta/.test(nova.className);
+    let cine=$('#cine');
+    if(!cine){cine=document.createElement('div');cine.id='cine';cine.innerHTML='<i></i><i></i>';stage.appendChild(cine);}
+    const [b1,b2]=cine.children;
     emTransicao=true;
-    const ease='cubic-bezier(.7,0,.3,1)';
-    wipe.animate([{clipPath:de},{clipPath:meio}],{duration:360,easing:ease,fill:'forwards'}).onfinish=()=>{
+    const ease='cubic-bezier(.65,0,.25,1)', t1=forte?520:380, t2=forte?950:620;
+    const fim=()=>{emTransicao=false;if(pendente!==null){const p=pendente;pendente=null;ir(p);}};
+    [b1,b2].forEach(b=>b.animate([{transform:'scaleY(0)'},{transform:'scaleY(1)'}],{duration:t1,easing:ease,fill:'forwards'}));
+    velha.animate([{transform:'scale(1) translateX(0)',filter:'blur(0) brightness(1)'},{transform:`scale(1.07) translateX(${-dir*2}%)`,filter:'blur(10px) brightness(.15)'}],{duration:t1,easing:ease}).onfinish=()=>{
       aplicar(n);
-      wipe.animate([{clipPath:meio},{clipPath:para}],{duration:420,easing:ease,fill:'forwards'}).onfinish=()=>{emTransicao=false;if(pendente!==null){const p=pendente;pendente=null;ir(p);}};
+      nova.animate([{transform:`scale(${forte?1.16:1.08}) translateX(${dir*2}%)`,filter:'blur(12px) brightness(.15)'},{transform:'scale(1) translateX(0)',filter:'blur(0) brightness(1)'}],{duration:t2,easing:'cubic-bezier(.2,.75,.2,1)'});
+      [b1,b2].forEach(b=>b.animate([{transform:'scaleY(1)'},{transform:'scaleY(0)'}],{duration:t2,delay:forte?180:60,easing:ease,fill:'forwards'}));
+      setTimeout(fim,t2*.7);
     };
   }
   addEventListener('hashchange',()=>{const n=parseInt(location.hash.slice(1),10);if(!isNaN(n))ir(n-1);});
