@@ -1429,3 +1429,36 @@ a.sis:hover{background:var(--lime);color:var(--ink)}
 .s-asp2 h2{font-size:64px;max-width:1200px}
 .cn-p.lev{background:#ecebe6}
 .cn-p.lev figcaption{background:#2a2f2c}
+
+/* ===== AR: todas as peças num slide */
+.s-art{background:#0c0f0e}
+.caixa-art{position:absolute;inset:92px 120px 66px;display:grid;grid-template-columns:440px 1fr;gap:40px;align-items:center}
+.art-esq{display:flex;flex-direction:column;gap:20px}
+.art-esq h2{font-size:56px;line-height:.95}
+.art-esq .arc-tela{width:250px;height:420px}.art-esq .arc-tela img{width:180px;height:180px}
+.art-esq .arc-cel{align-items:flex-start}
+.art-grade{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.art{position:relative;display:grid;grid-template-columns:1fr 92px;grid-template-rows:1fr auto;gap:6px;background:rgba(255,255,255,.05);border:1px solid rgba(192,238,78,.3);padding:8px;text-decoration:none;color:#fff;height:132px;transition:border-color .3s,transform .3s}
+.art:hover{border-color:var(--lime);transform:translateY(-4px)}
+.art-f{grid-row:1/3;width:100%;height:100%;object-fit:contain;background:#d8d9db;min-height:0}
+.art-q{width:92px;height:92px;background:#fff;padding:3px}
+.art b{font-size:12.5px;line-height:1.15;font-weight:600}
+.tela.ativa .art{animation:rcEntra .6s ease both;animation-delay:calc(.4s + var(--i) * .07s)}
+
+/* ===== Eficiência + matéria-prima */
+.gr-ef2{height:100%;display:grid;grid-template-columns:1fr .9fr;gap:44px;align-items:center}
+.s-ef2 .ef-tit h2{font-size:58px}
+.ef-lista{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.ef-lista li{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:baseline;border-bottom:1px solid rgba(0,0,0,.1);padding-bottom:6px}
+.ef-lista b{font-size:16px}
+.ef-lista span{font-size:13.5px;opacity:.65}
+.s-ef2 .ef p{font-size:15px}
+
+/* ===== Disclaimers */
+.s-dis .caixa{display:flex;flex-direction:column;gap:24px}
+.s-dis h2{font-size:56px}
+.dis-lista{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;grid-auto-flow:row;gap:14px 34px}
+.dis-lista li{display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start;border-top:1px solid rgba(0,0,0,.15);padding-top:10px}
+.dis-lista i{font-style:normal;font-family:var(--titulo);font-weight:900;font-size:26px;line-height:1;color:var(--teal)}
+.dis-lista p{font-size:15px;line-height:1.4}
+.tela.ativa .dis-lista li{animation:rcEntra .5s ease both;animation-delay:calc(.2s + var(--i) * .06s)}
