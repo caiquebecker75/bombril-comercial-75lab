@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>KPIs de implementação · Grupo Bombril × 75 LAB</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@900&family=Space+Grotesk:wght@400;600&family=Space+Mono&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0e1110;--lime:#C0EE4E;--teal:#2EA08C;--card:#171b19;--tx:#f2f2ee}
+*{box-sizing:border-box;margin:0}
+body{background:var(--ink);color:var(--tx);font-family:'Space Grotesk',system-ui,sans-serif;padding:20px 16px 40px;max-width:560px;margin:0 auto}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+header b{font-family:'Big Shoulders Display',Impact,sans-serif;font-size:22px;text-transform:uppercase}
+header span{font-family:'Space Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#0e1110;background:var(--lime);padding:4px 8px}
+h1{font-family:'Big Shoulders Display',Impact,sans-serif;font-size:40px;line-height:.95;text-transform:uppercase;margin-bottom:6px}
+.sub{opacity:.65;font-size:14px;margin-bottom:18px}
+.aviso{font-family:'Space Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--lime);border:1px dashed var(--lime);padding:6px 8px;margin-bottom:18px}
+.grade{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.k{background:var(--card);padding:14px;border:1px solid #262b28}
+.k em{display:block;font-style:normal;font-size:12px;opacity:.7;min-height:32px}
+.k b{font-family:'Big Shoulders Display',Impact,sans-serif;font-size:38px;line-height:1;color:var(--lime)}
+.k small{font-size:11px;opacity:.6;margin-left:3px}
+.barra{height:6px;background:#2a2f2c;margin-top:8px}.barra i{display:block;height:100%;background:var(--teal);width:0;transition:width 1.4s cubic-bezier(.2,.8,.2,1)}
+h2{font-family:'Big Shoulders Display',Impact,sans-serif;font-size:24px;text-transform:uppercase;margin:24px 0 10px}
+.reg{display:grid;gap:8px}
+.reg div{display:grid;grid-template-columns:70px 1fr 44px;gap:10px;align-items:center;font-size:13px}
+.reg .barra{margin:0}
+.lojas{display:grid;gap:8px}
+.lojas div{background:var(--card);padding:10px 12px;display:flex;justify-content:space-between;font-size:13px;border-left:3px solid var(--teal)}
+.lojas div.atr{border-color:#e0a030}
+footer{margin-top:26px;font-size:11px;opacity:.5;line-height:1.4}
+</style>
+</head>
+<body>
+<header><b>75 LAB × Bombril</b><span>Ao vivo</span></header>
+<h1>Implementação do MPDV</h1>
+<p class="sub">Painel que o trade acompanha durante o rollout, loja a loja.</p>
+<p class="aviso">Exemplo de painel · dados fictícios</p>
+<div class="grade">
+  <div class="k"><em>Lojas implantadas no prazo</em><b data-v="94">0</b><small>%</small><div class="barra"><i data-w="94"></i></div></div>
+  <div class="k"><em>Tempo médio de instalação</em><b data-v="38">0</b><small>min</small><div class="barra"><i data-w="62"></i></div></div>
+  <div class="k"><em>Peças conformes ao projeto (foto)</em><b data-v="97">0</b><small>%</small><div class="barra"><i data-w="97"></i></div></div>
+  <div class="k"><em>Avarias e reposições</em><b data-v="2">0</b><small>% das peças</small><div class="barra"><i data-w="8"></i></div></div>
+  <div class="k"><em>Ruptura no ponto</em><b data-v="4">0</b><small>%</small><div class="barra"><i data-w="12"></i></div></div>
+  <div class="k"><em>Venda da loja com a peça</em><b data-v="18">0</b><small>% a mais</small><div class="barra"><i data-w="58"></i></div></div>
+  <div class="k"><em>Peças instaladas</em><b data-v="1312">0</b><small>de 1.400</small><div class="barra"><i data-w="94"></i></div></div>
+  <div class="k"><em>Scans do shopper no QR</em><b data-v="4870">0</b><small>no mês</small><div class="barra"><i data-w="70"></i></div></div>
+</div>
+<h2>Cobertura por região</h2>
+<div class="reg">
+  <div><span>SP Capital</span><div class="barra"><i data-w="98"></i></div><span>98%</span></div>
+  <div><span>SP Interior</span><div class="barra"><i data-w="95"></i></div><span>95%</span></div>
+  <div><span>MG e CO</span><div class="barra"><i data-w="93"></i></div><span>93%</span></div>
+  <div><span>RJ</span><div class="barra"><i data-w="96"></i></div><span>96%</span></div>
+  <div><span>Sul</span><div class="barra"><i data-w="91"></i></div><span>91%</span></div>
+  <div><span>Nordeste</span><div class="barra"><i data-w="88"></i></div><span>88%</span></div>
+  <div><span>Norte</span><div class="barra"><i data-w="84"></i></div><span>84%</span></div>
+</div>
+<h2>Últimas instalações</h2>
+<div class="lojas">
+  <div><span>Atacadão · Osasco · Móvel BL</span><span>hoje 09:42</span></div>
+  <div><span>Assaí · Campinas · Móvel BL</span><span>hoje 08:15</span></div>
+  <div class="atr"><span>Super · Recife · Display Sapólio</span><span>reagendada</span></div>
+  <div><span>Hiper · Curitiba · Capa de gôndola</span><span>ontem 17:30</span></div>
+</div>
+<footer>Cada peça leva um QR. O montador registra foto, loja e horário; o painel junta tudo por região, canal e peça. 75lab.com.br</footer>
+<script>
+addEventListener('load',()=>{
+  document.querySelectorAll('[data-w]').forEach(i=>requestAnimationFrame(()=>i.style.width=i.dataset.w+'%'));
+  document.querySelectorAll('[data-v]').forEach(el=>{const a=+el.dataset.v,t0=performance.now();const f=new Intl.NumberFormat('pt-BR');
+    (function p(t){const k=Math.min(1,(t-t0)/1300);el.textContent=f.format(Math.round(a*(1-Math.pow(1-k,3))));if(k<1)requestAnimationFrame(p);})(t0);});
+});
+</script>
+</body>
+</html>

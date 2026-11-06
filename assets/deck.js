@@ -329,6 +329,7 @@
     addEventListener('keydown',e=>{if(e.key==='Escape'&&t.classList.contains('com-pag')){e.stopPropagation();fechar();}},true);
     roteiro(t.classList[1],{itens:()=>[grade,...cards],semAuto:true});
   });
+  abas('s-cn',{extra:2500,aoMudar:(k,t)=>{const L='AHSPC'[k];$$('.cn-p',t).forEach(f=>{const d=f.dataset.canais.includes(L);f.classList.toggle('dentro',d);f.classList.toggle('fora',!d);});$$('[data-painel].on [data-conta]',t).forEach(contar);}});
   /* ClickLab: as duas janelas rolam juntas e os botões levam ao ponto da página */
   (function(){
     const t=$('.s-click2');if(!t)return;const rs=$$('[data-sync]',t);let trava=false;
