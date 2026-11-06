@@ -1056,3 +1056,76 @@ a.sis:hover{background:var(--lime);color:var(--ink)}
 .cine-faixa{position:absolute;left:0;right:0;height:70px;background:#000;z-index:5}
 .cine-faixa.cima{top:0}.cine-faixa.baixo{bottom:0}
 .pdf .cine-sobre,.pdf .cine-nome span,.pdf .cine-sub{opacity:1!important}
+
+/* ===== Vitrine por marca + página de produto */
+.gr-vit{height:100%;display:grid;grid-template-columns:400px 1fr;gap:26px}
+.vit-marca{background:var(--f);color:var(--t);padding:26px;display:flex;flex-direction:column;gap:12px;position:relative;overflow:hidden}
+.vit-marca::before{content:"";position:absolute;width:520px;height:520px;border-radius:50%;background:var(--d);opacity:.55;left:-200px;top:-260px}
+.vit-marca>*{position:relative}
+.vit-marca .cm-logo{width:170px;max-height:150px}
+.vit-marca h2{font-size:54px;line-height:.95;color:var(--t)}
+.vit-marca p{font-size:18px;opacity:.85}
+.vit-n{font-family:var(--titulo);font-weight:900;text-transform:uppercase;font-size:26px;background:var(--t);color:var(--f);padding:6px 14px;align-self:flex-start}
+.vit-kv{margin:auto 0 0;aspect-ratio:16/9;position:relative;box-shadow:0 18px 40px rgba(0,0,0,.3)}
+.vit-kv img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.vit-lado{display:flex;flex-direction:column;gap:14px;min-height:0}
+.vit-dica{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--teal)}
+.vit-dica .ic{width:26px;height:26px}
+.vit-grade{flex:1;min-height:0;display:grid;gap:12px;grid-template-columns:repeat(3,1fr);grid-auto-rows:1fr}
+.vit-grade.n1,.vit-grade.n2,.vit-grade.n4{grid-template-columns:1fr 1fr}
+.vit-grade.n7,.vit-grade.n8{grid-template-columns:repeat(4,1fr)}
+.vit-card{position:relative;background:#d8d9db;border:0;padding:0;cursor:pointer;overflow:hidden;text-align:left;min-height:0;transition:transform .3s cubic-bezier(.2,.8,.2,1.3),box-shadow .3s}
+.vit-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;transition:transform .5s}
+.vit-card span{position:absolute;left:0;right:0;bottom:0;background:var(--ink);color:#fff;padding:8px 12px;font-family:var(--titulo);font-weight:900;text-transform:uppercase;font-size:20px;line-height:1.05}
+.vit-card em{display:block;font-style:normal;font-family:var(--mono);font-weight:400;font-size:10px;letter-spacing:.08em;color:var(--lime);margin-bottom:2px}
+.vit-card:hover{transform:translateY(-6px);box-shadow:0 18px 30px rgba(0,0,0,.18)}
+.vit-card:hover img{transform:scale(1.07)}
+.tela.ativa .vit-card{animation:rcEntra .7s cubic-bezier(.2,.8,.2,1.15) both;animation-delay:calc(.3s + var(--i) * .08s)}
+.vit-pag{position:absolute;inset:34px 44px;z-index:40;background:#f3f1ea;box-shadow:0 30px 80px rgba(0,0,0,.45);display:none;flex-direction:column;padding:22px 26px;gap:14px}
+.vit-pag.on{display:flex;animation:vpAbre .5s cubic-bezier(.2,.8,.2,1.05) both}
+@keyframes vpAbre{from{opacity:0;transform:translateY(40px) scale(.96)}}
+.s-vit.com-pag .caixa{filter:blur(6px) brightness(.6);transition:filter .3s}
+.vp-topo{display:grid;grid-template-columns:auto auto 1fr auto;align-items:center;gap:16px;border-bottom:2px solid var(--ink);padding-bottom:10px}
+.vp-topo .cod{font-family:var(--mono);font-size:12px;font-weight:700;color:#fff;background:var(--teal);padding:4px 8px}
+.vp-topo h3{font-size:38px;line-height:1}
+.vp-topo p{font-size:15px;opacity:.7;max-width:560px}
+.vit-x{width:46px;height:46px;border:2px solid var(--ink);background:none;font-size:30px;line-height:1;cursor:pointer;color:var(--ink)}
+.vit-x:hover{background:var(--ink);color:#fff}
+.vp-corpo{flex:1;min-height:0;display:grid;grid-template-columns:1fr 360px;gap:18px}
+.vp-imgs{display:grid;grid-template-columns:.6fr 30px 1fr 1fr;gap:10px;min-height:0}
+.vit-pag.pol .vp-imgs{grid-template-columns:1.3fr 1fr 1fr}
+.vp-imgs figure,.vp-eng figure{margin:0;position:relative;overflow:hidden;background:#d8d9db;min-height:0}
+.vp-imgs img,.vp-eng img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.vp-imgs figcaption,.vp-eng figcaption{position:absolute;left:0;top:0;font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;background:var(--ink);color:#fff;padding:4px 7px;z-index:2}
+.vp-hoje{background:#fff!important}.vp-hoje img{padding:8px;box-sizing:border-box}.vp-hoje figcaption{background:#777!important}
+.vp-hoje.vazio{display:flex;align-items:center;justify-content:center}.vp-hoje.vazio figcaption{position:static;background:none!important;color:#666}
+.vp-mont figcaption{background:var(--teal)!important}
+.vit-pag.on .vp-exp img{animation:pxExplode 1s cubic-bezier(.2,.9,.25,1.15) .3s both}
+.vit-pag.on .px-seta{animation:pxSeta 1.6s ease-in-out infinite}
+.vp-lado{display:flex;flex-direction:column;gap:12px;min-height:0}
+.vit-mapa{position:relative;aspect-ratio:16/10;background:#e5e5e2;overflow:hidden;flex:none}
+.vit-mapa img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(.9)}
+.vit-mapa svg{position:absolute;inset:0;width:100%;height:100%}
+.vit-mapa polygon{fill:rgba(46,160,140,.55);stroke:var(--teal);stroke-width:6}
+.vit-mapa i{position:absolute;width:16px;height:16px;margin:-8px;border-radius:50%;background:var(--teal)}
+.vit-pag.on .vit-mapa i{animation:vpPino 1.6s ease-out infinite}
+@keyframes vpPino{from{box-shadow:0 0 0 0 rgba(46,160,140,.7)}to{box-shadow:0 0 0 22px rgba(46,160,140,0)}}
+.vit-mapa b{position:absolute;left:8px;bottom:8px;display:flex;align-items:center;gap:6px;background:var(--ink);color:#fff;font-size:11px;padding:4px 8px;font-family:var(--mono);text-transform:uppercase}
+.vit-mapa b .ic{width:16px;height:16px}
+.vp-ficha{display:grid;grid-template-columns:auto 1fr;gap:5px 14px;margin:0;font-size:13.5px}
+.vp-ficha dt{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.06em;opacity:.55;padding-top:2px}
+.vp-ficha dd{margin:0;font-weight:600}
+.vp-eng{flex:1;min-height:70px;display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
+.vp-eng figure{background:#fff;border:1px solid #ddd}
+.pdf .vit-pag.on{animation:none}
+
+/* ===== Vantagens competitivas */
+.s-vt .caixa{display:flex;flex-direction:column;gap:26px}
+.s-vt h2{font-size:58px}
+.gr-vt{flex:1;min-height:0;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:1fr 1fr;gap:14px}
+.vt{border:2px solid rgba(192,238,78,.35);padding:22px;display:flex;flex-direction:column;gap:10px;background:rgba(255,255,255,.03);--d0:calc(.5s + var(--i) * .1s)}
+.vt-ic{width:64px;height:64px;color:var(--lime)}
+.vt b{font-family:var(--titulo);font-weight:900;text-transform:uppercase;font-size:26px;line-height:1}
+.vt p{font-size:16px;opacity:.72;line-height:1.3}
+.tela.ativa .vt{animation:rcEntra .7s cubic-bezier(.2,.8,.2,1.15) both;animation-delay:calc(.25s + var(--i) * .1s)}
+.vt:hover{border-color:var(--lime);transform:translateY(-4px);transition:.3s}

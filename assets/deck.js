@@ -273,6 +273,7 @@
   function iniciarAutos(t){
     if(modoPdf)return;
     (autos[t.classList[1]]||[]).forEach(cfg=>{
+      if(cfg.semAuto)return;
       const itens=cfg.itens(),n=itens.length;if(!n)return;
       const ms=k=>cfg.ms?cfg.ms(k):leitura(cfg.texto?cfg.texto(k):itens[k].textContent)+(cfg.extra||0);
       let i=cfg.inicio?cfg.inicio():Math.max(0,itens.findIndex(x=>x.matches('.on,.aberto')||x.parentElement.classList.contains('aberto')));
@@ -317,6 +318,17 @@
   abas('s-cex',{aoMudar:(k,t)=>$$('.pin13',t).forEach((p,j)=>p.classList.toggle('on',j===k))});
   abas('s-13',{aoMudar:(k,t)=>$$('.pin13',t).forEach((p,j)=>p.classList.toggle('on',j===k))});
   abas('s-mapa',{extra:2500,aoMudar:(k,t)=>{$$('[data-zona]',t).forEach(z=>z.classList.toggle('on',k===0||+z.dataset.zona===k-1));$('.palco-m',t).classList.toggle('todas',k===0);}});
+
+  /* vitrine por marca: cada peça abre a página de produto por cima da grade (05/11, noite) */
+  $$('.s-vit').forEach(t=>{
+    const cards=$$('[data-peca]',t),pags=$$('.vit-pag',t),grade=$('.vit-grade-bt',t);
+    const fechar=()=>{pags.forEach(p=>p.classList.remove('on'));cards.forEach(c=>c.classList.remove('on'));t.classList.remove('com-pag');};
+    cards.forEach((c,k)=>c.addEventListener('click',e=>{e.stopPropagation();fechar();pags[k].classList.add('on');c.classList.add('on');t.classList.add('com-pag');}));
+    $$('.vit-x',t).forEach(x=>x.addEventListener('click',e=>{e.stopPropagation();fechar();}));
+    grade.addEventListener('click',fechar);
+    addEventListener('keydown',e=>{if(e.key==='Escape'&&t.classList.contains('com-pag')){e.stopPropagation();fechar();}},true);
+    roteiro(t.classList[1],{itens:()=>[grade,...cards],semAuto:true});
+  });
   /* ClickLab: as duas janelas rolam juntas e os botões levam ao ponto da página */
   (function(){
     const t=$('.s-click2');if(!t)return;const rs=$$('[data-sync]',t);let trava=false;
